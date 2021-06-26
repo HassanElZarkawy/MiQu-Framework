@@ -49,7 +49,7 @@ if ( session_status() === PHP_SESSION_NONE )
 | Include composer autoloader
 |--------------------------------------------------------------------------
 */
-//require __DIR__ . '../../vendor/autoload.php';
+require __DIR__ . '../../vendor/autoload.php';
 
 /*
 |--------------------------------------------------------------------------
