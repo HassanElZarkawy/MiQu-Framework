@@ -21,6 +21,8 @@ if ( ! defined( 'BASE_DIRECTORY' ) )
     define( 'BASE_DIRECTORY', getcwd() . DIRECTORY_SEPARATOR );
 }
 
+echo BASE_DIRECTORY; die();
+
 /*
 |--------------------------------------------------------------------------
 | Turn off public error reporting
@@ -41,7 +43,7 @@ if ( session_status() === PHP_SESSION_NONE )
 | Include helper functions
 |--------------------------------------------------------------------------
 */
-require_once __DIR__ . '/functions.php';
+//require_once __DIR__ . '/functions.php';
 
 
 /*
@@ -49,7 +51,6 @@ require_once __DIR__ . '/functions.php';
 | Include composer autoloader
 |--------------------------------------------------------------------------
 */
-/** @noinspection PhpIncludeInspection */
 //require join(DIRECTORY_SEPARATOR, [ __DIR__,  '..', '..', 'vendor', 'autoload.php' ]);
 
 /*
@@ -64,7 +65,6 @@ if ( env( 'environment' ) === AppEnvironment::DEVELOPMENT )
     global $debugger;
     $debugger = new DebugBar\StandardDebugBar;
 }
-
 
 if ( env('database.enabled') )
     CapsuleManager::boot();
