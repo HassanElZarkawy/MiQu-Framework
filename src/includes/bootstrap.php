@@ -59,7 +59,7 @@ if ( session_status() === PHP_SESSION_NONE )
 */
 Miqu\Core\Environment::load( BASE_DIRECTORY . '.env.php' );
 
-if ( env( 'environment' ) === AppEnvironment::DEVELOPMENT )
+if ( \env( 'environment' ) === AppEnvironment::DEVELOPMENT )
 {
     global $debugger;
     $debugger = new DebugBar\StandardDebugBar;
