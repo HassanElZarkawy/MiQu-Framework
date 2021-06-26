@@ -11,7 +11,11 @@
     "autoload": {
         "psr-4": {
             "Miqu\\" : "src/"
-        }
+        },
+        "files": [
+            "src/includes/bootstrap.php",
+            "src/includes/functions.php"
+        ]
     },
     "require": {
         "php": ">=7.2",
