@@ -13,8 +13,8 @@
             "Miqu\\" : "src/"
         },
         "files": [
-            "src/includes/bootstrap.php",
-            "src/includes/functions.php"
+            "src/includes/functions.php",
+            "src/includes/bootstrap.php"
         ]
     },
     "require": {
