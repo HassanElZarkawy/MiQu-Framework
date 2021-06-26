@@ -2,9 +2,9 @@
 
 namespace Miqu\Core;
 
-use Miqu\Core\Interfaces\IContainer;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer as Manager;
+use ReflectionException;
 
 class Mailer
 {
@@ -15,20 +15,20 @@ class Mailer
 
     /**
      * @throws Exception
+     * @throws ReflectionException
      */
     public function __construct()
     {
-        /** @var IContainer $container */
         global $container;
         $this->mailer = $container->Resolve( Manager::class );
-        if ( env('mailing.is_smtp') )
+        if ( \Miqu\Helpers\env('mailing.is_smtp') )
         {
             $this->mailer->isSMTP();
-            $this->mailer->Host       = env( 'mailing.smtp.host' );
+            $this->mailer->Host       = \Miqu\Helpers\env( 'mailing.smtp.host' );
             $this->mailer->SMTPAuth   = true;
-            $this->mailer->Username   = env( 'mailing.smtp.user' );
-            $this->mailer->Password   = env( 'mailing.smtp.password' );
-            $this->mailer->Port       = env( 'mailing.smtp.port' );
+            $this->mailer->Username   = \Miqu\Helpers\env( 'mailing.smtp.user' );
+            $this->mailer->Password   = \Miqu\Helpers\env( 'mailing.smtp.password' );
+            $this->mailer->Port       = \Miqu\Helpers\env( 'mailing.smtp.port' );
             $this->mailer->SMTPSecure = Manager::ENCRYPTION_SMTPS;
             $this->mailer->setFrom( $this->mailer->Username );
         }

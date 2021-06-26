@@ -30,7 +30,7 @@ class TaskRunner extends Command
         $io = $this->app()->io();
         $taskList = new TaskList;
         $total_tasks = 0;
-        collect(env('tasks'))->each(function($expression, $abstract) use($taskList, $total_tasks) {
+        collect(\Miqu\Helpers\env('tasks'))->each(function($expression, $abstract) use($taskList, $total_tasks) {
             try {
                 /** @var Task $task */
                 $task = $this->container->Resolve($abstract);

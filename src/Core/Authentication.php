@@ -10,6 +10,7 @@ use HansOtt\PSR7Cookies\SetCookie;
 use Models\Security\Token;
 use Models\User;
 use Psr\Http\Message\ServerRequestInterface;
+use function Miqu\Helpers\logger;
 
 class Authentication
 {
@@ -148,7 +149,7 @@ class Authentication
             if ($this->check())
                 return $this->user()->id;
         } catch (Exception $exception) {
-            if ( env('logger.enabled') )
+            if ( \Miqu\Helpers\env('logger.enabled') )
                 logger()->warning('Calling auth()->id() when not authenticated');
         }
 

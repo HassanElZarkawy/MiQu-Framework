@@ -10,6 +10,8 @@ use Phpfastcache\CacheManager;
 use Phpfastcache\Config\ConfigurationOption;
 use Phpfastcache\Exceptions\PhpfastcacheInvalidConfigurationException;
 use Whoops\Run;
+use function Miqu\Helpers\logger;
+use function Miqu\Helpers\response;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,8 +22,6 @@ if ( ! defined( 'BASE_DIRECTORY' ) )
 {
     define( 'BASE_DIRECTORY', getcwd() . DIRECTORY_SEPARATOR );
 }
-
-echo BASE_DIRECTORY; die();
 
 /*
 |--------------------------------------------------------------------------
@@ -60,13 +60,13 @@ if ( session_status() === PHP_SESSION_NONE )
 */
 Miqu\Core\Environment::load( BASE_DIRECTORY . '.env.php' );
 
-if ( env( 'environment' ) === AppEnvironment::DEVELOPMENT )
+if ( \Miqu\Helpers\env( 'environment' ) === AppEnvironment::DEVELOPMENT )
 {
     global $debugger;
     $debugger = new DebugBar\StandardDebugBar;
 }
 
-if ( env('database.enabled') )
+if ( \Miqu\Helpers\env('database.enabled') )
     CapsuleManager::boot();
 
 /*
@@ -82,7 +82,7 @@ $container = new Miqu\Core\Container;
 | Set an instance for the cache manager
 |--------------------------------------------------------------------------
 */
-if ( env( 'cache.enabled' ) ) {
+if ( \Miqu\Helpers\env( 'cache.enabled' ) ) {
     try {
         CacheManager::setDefaultConfig(new ConfigurationOption([
             'path' => BASE_DIRECTORY . env('cache.path'),
@@ -116,7 +116,11 @@ $container->Register( Miqu\Core\Interfaces\IView::class, function( $c ) {
 |--------------------------------------------------------------------------
 */
 $container->Register( Miqu\Core\Interfaces\IViewEngine::class, function() {
-    return new BladeOne( BASE_DIRECTORY . env('blade.views_path'), BASE_DIRECTORY . env('blade.bin_path'), env('blade.mode') );
+    return new BladeOne(
+        BASE_DIRECTORY . \Miqu\Helpers\env('blade.views_path'),
+        BASE_DIRECTORY . \Miqu\Helpers\env('blade.bin_path'),
+        \Miqu\Helpers\env('blade.mode')
+    );
 } );
 
 /*
@@ -124,7 +128,7 @@ $container->Register( Miqu\Core\Interfaces\IViewEngine::class, function() {
 | Auto handle errors
 |--------------------------------------------------------------------------
 */
-if ( env('environment') === Miqu\Core\AppEnvironment::PRODUCTION )
+if ( \Miqu\Helpers\env('environment') === Miqu\Core\AppEnvironment::PRODUCTION )
 {
     register_shutdown_function(
         /** @throws ReflectionException */
@@ -155,4 +159,4 @@ $container->RegisterSingleton( Miqu\Core\App::class, function () {
 |--------------------------------------------------------------------------
 */
 if ( isset( $_SERVER['HTTP_HOST'] ) && ! empty( $_SERVER[ 'HTTP_HOST' ] ) )
-    autoload_directory( BASE_DIRECTORY . 'Routes/' );
+    \Miqu\Helpers\autoload_directory( BASE_DIRECTORY . 'Routes/' );

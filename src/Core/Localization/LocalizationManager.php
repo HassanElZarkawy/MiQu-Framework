@@ -5,6 +5,7 @@ namespace Miqu\Core\Localization;
 use Miqu\Core\AppEnvironment;
 use Exception;
 use Tightenco\Collect\Support\Collection;
+use function Miqu\Helpers\string;
 
 class LocalizationManager
 {
@@ -25,9 +26,9 @@ class LocalizationManager
 
     public function __construct()
     {
-        $this->language = (string)env('localization.default_language');
-        $this->compilePath = BASE_DIRECTORY . DIRECTORY_SEPARATOR . env('localization.compile_path');
-        $this->languagesPath = BASE_DIRECTORY . DIRECTORY_SEPARATOR . env('localization.languages_path');
+        $this->language = (string)\Miqu\Helpers\env('localization.default_language');
+        $this->compilePath = BASE_DIRECTORY . DIRECTORY_SEPARATOR . \Miqu\Helpers\env('localization.compile_path');
+        $this->languagesPath = BASE_DIRECTORY . DIRECTORY_SEPARATOR . \Miqu\Helpers\env('localization.languages_path');
     }
 
     /**

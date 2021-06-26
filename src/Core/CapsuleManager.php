@@ -40,7 +40,7 @@ class CapsuleManager
      */
     private static function getCurrentConfiguration() : array
     {
-        $driver = strtolower( env('database.driver') );
+        $driver = strtolower( \Miqu\Helpers\env('database.driver') );
         $config = null;
         if ( $driver === 'mysql' )
             $config = self::getMysqlConfiguration();
@@ -76,7 +76,7 @@ class CapsuleManager
     private static function getConfiguration(string $path, array $mapping) : Collection
     {
         return collect($mapping)->map(function ($item) use($path) {
-            return env( $path . $item );
+            return \Miqu\Helpers\env( $path . $item );
         });
     }
 }

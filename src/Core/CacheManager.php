@@ -21,7 +21,7 @@ class CacheManager
      */
     public static function remember(string $key, callable $callback, int $expires)
     {
-        $instance = \Phpfastcache\CacheManager::getInstance( env('cache.driver') );
+        $instance = \Phpfastcache\CacheManager::getInstance( \Miqu\Helpers\env('cache.driver') );
         $cachedObject = $instance->getItem($key);
         if ( ! $cachedObject->isHit() )
         {

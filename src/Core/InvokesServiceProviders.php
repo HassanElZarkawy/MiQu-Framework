@@ -13,10 +13,10 @@ trait InvokesServiceProviders
 
     public function registerProviders()
     {
-        if ( ! env('providers') )
+        if ( ! \Miqu\Helpers\env('providers') )
             return;
 
-        $this->providers = collect(env('providers'))->map(function($abstract) {
+        $this->providers = collect(\Miqu\Helpers\env('providers'))->map(function($abstract) {
             return $this->container->Resolve($abstract);
         })->filter(function($provider) {
             return $provider instanceof ServiceProvider;

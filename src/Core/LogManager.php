@@ -5,6 +5,7 @@ namespace Miqu\Core;
 use Monolog\Formatter\HtmlFormatter;
 use Monolog\Handler\RotatingFileHandler;
 use Monolog\Logger;
+use function Miqu\Helpers\string;
 
 class LogManager
 {
@@ -34,10 +35,10 @@ class LogManager
      */
     private static function createLogger(string $channel): Logger
     {
-        $log_file_path = (string)string(BASE_DIRECTORY)->append(DIRECTORY_SEPARATOR)->append(env('logging.path'));
+        $log_file_path = (string)string(BASE_DIRECTORY)->append(DIRECTORY_SEPARATOR)->append(\Miqu\Helpers\env('logging.path'));
 
         $handler = new RotatingFileHandler($log_file_path, 100);
-        $handler->setFormatter(new HtmlFormatter(env('logging.time_format')));
+        $handler->setFormatter(new HtmlFormatter(\Miqu\Helpers\env('logging.time_format')));
 
         return (new Logger($channel))->pushHandler( $handler );
     }

@@ -19,7 +19,7 @@ class SeedRunner extends Command
     public function __construct()
     {
         parent::__construct('run:seeds', 'Runs all the seeder classes (if found)');
-        $this->faker = Factory::create( env('localization.default_language') );
+        $this->faker = Factory::create( \Miqu\Helpers\env('localization.default_language') );
     }
 
     /**

@@ -1,472 +1,461 @@
 <?php
 
-use Miqu\Core\AppEnvironment;
-use Miqu\Core\Authentication;
-use Miqu\Core\Events\EventBase;
-use Miqu\Core\Interfaces\IView;
-use Miqu\Core\Localization\LocalizationManager;
-use Miqu\Core\LogManager;
-use Gaufrette\Adapter\Local as LocalAdapter;
-use Gaufrette\Filesystem;
-use Laminas\Diactoros\ServerRequest;
-use League\Route\Router;
-use League\Uri\UriInfo;
-use Monolog\Logger;
-use Rakit\Validation\Validation;
-use Rakit\Validation\Validator;
-use Stringy\Stringy;
-use Tightenco\Collect\Support\Collection;
+namespace Miqu\Helpers {
 
-/**
- * @return Authentication
- */
-function auth(): Authentication
-{
-    return new Authentication;
-}
+    use Closure;
+    use DebugBar\JavascriptRenderer;
+    use Exception;
+    use InvalidArgumentException;
+    use Miqu\Core\App;
+    use Miqu\Core\AppEnvironment;
+    use Miqu\Core\Authentication;
+    use Miqu\Core\Environment;
+    use Miqu\Core\Events\EventBase;
+    use Miqu\Core\Http\HttpResponse;
+    use Miqu\Core\Interfaces\IView;
+    use Miqu\Core\Localization\LocalizationManager;
+    use Miqu\Core\LogManager;
+    use Gaufrette\Adapter\Local as LocalAdapter;
+    use Gaufrette\Filesystem;
+    use Laminas\Diactoros\ServerRequest;
+    use League\Route\Router;
+    use League\Uri\UriInfo;
+    use Miqu\Core\Mailer;
+    use Monolog\Logger;
+    use Rakit\Validation\Validation;
+    use Rakit\Validation\Validator;
+    use ReflectionException;
+    use Stringy\Stringy;
+    use Tightenco\Collect\Support\Collection;
 
-/**
- * Creates a Stringy object and returns it on success.
- *
- * @param  mixed   $str      Value to modify, after being cast to string
- * @param string|null $encoding The character encoding
- * @return Stringy A Stringy object
- * @throws InvalidArgumentException if an array or object without a
- *         __toString method is passed as the first argument
- */
-function string($str, string $encoding = null): Stringy
-{
-    return new Stringy($str, $encoding);
-}
-
-function collect($data) : Collection
-{
-    return new Collection($data ?: []);
-}
-
-/**
- * @param string $key
- * @return string
- */
-function __(string $key) : string
-{
-    if ( ! env('localization.enabled') )
-        return $key;
-
-    global $container;
-    try
+    /**
+     * @return Authentication
+     */
+    function auth(): Authentication
     {
-        /** @var LocalizationManager $manager */
-        $manager = $container->Resolve(LocalizationManager::class);
-        return $manager->translate($key);
+        return new Authentication;
     }
-    catch ( Exception $ex )
+
+    /**
+     * Creates a Stringy object and returns it on success.
+     *
+     * @param mixed $str Value to modify, after being cast to string
+     * @param string|null $encoding The character encoding
+     * @return Stringy A Stringy object
+     * @throws InvalidArgumentException if an array or object without a
+     *         __toString method is passed as the first argument
+     */
+    function string($str, string $encoding = null): Stringy
     {
-        return $key;
+        return new Stringy($str, $encoding);
     }
-}
 
-function _n( string $number, int $decimals = 0 ) : string
-{
-    if ( ! env( 'localization.enabled' ) )
-        return $number;
-
-    $locale = lang();
-    $str = number_format( $number, $decimals );
-    if ( $locale === 'ar' )
+    function collect($data): Collection
     {
-        $arabic_eastern = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
-        $arabic_western = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-        return str_replace( $arabic_western, $arabic_eastern, $str );
+        return new Collection($data ?: []);
     }
-    return $str;
-}
 
-function lang() : string
-{
-    if ( ! env( 'localization.enabled' ) )
-        return env( 'localization.default_language' );
-
-    global $container;
-    try
+    /**
+     * @param string $key
+     * @return string
+     */
+    function __(string $key): string
     {
-        /** @var LocalizationManager $manager */
-        $manager = $container->Resolve(LocalizationManager::class);
-        return $manager->getLanguage();
-    }
-    catch ( Exception $ex )
-    {
-        return env('localization.default_language');
-    }
-}
+        if ( ! env('localization.enabled') )
+            return $key;
 
-function debug( $variable ) : void
-{
-    if ( env( 'environment' ) !== AppEnvironment::DEVELOPMENT )
-        return;
-
-    global $debugger;
-    $debugger[ 'messages' ]->addMessage( $variable );
-}
-
-function debugBarAssets() : string
-{
-    if ( env( 'environment' ) !== AppEnvironment::DEVELOPMENT )
-        return '';
-
-    global $debugger;
-    /** @var DebugBar\JavascriptRenderer $renderer */
-    $renderer = $debugger->getJavascriptRenderer();
-    $assets = $renderer->getAssets();
-    $html = '';
-    foreach ( $assets as $group )
-    {
-        if ( is_array( $group ) )
-        {
-            foreach( $group as $file )
-            {
-                $file_url = str_replace( BASE_DIRECTORY, url(''), $file );
-                if ( string( $file )->endsWith('js') )
-                    $html .= "<script src='$file_url'></script>";
-                else if ( string( $file )->endsWith('css') )
-                    $html .= "<link href='$file_url' rel='stylesheet'>";
-            }
+        global $container;
+        try {
+            /** @var LocalizationManager $manager */
+            $manager = $container->Resolve(LocalizationManager::class);
+            return $manager->translate($key);
+        } catch (Exception $ex) {
+            return $key;
         }
     }
-    return $html;
-}
 
-function renderDebugBar() : string
-{
-    if ( env( 'environment' ) !== AppEnvironment::DEVELOPMENT )
-        return '';
+    function _n(string $number, int $decimals = 0): string
+    {
+        if (!env('localization.enabled'))
+            return $number;
 
-    global $debugger;
-    $renderer = $debugger->getJavascriptRenderer();
-    return $renderer->render();
-}
+        $locale = lang();
+        $str = number_format($number, $decimals);
+        if ($locale === 'ar') {
+            $arabic_eastern = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+            $arabic_western = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+            return str_replace($arabic_western, $arabic_eastern, $str);
+        }
+        return $str;
+    }
 
-/**
- * @throws ReflectionException
- */
-function registerDebugBarCollector(string $class) : void
-{
-    if ( env( 'environment' ) !== AppEnvironment::DEVELOPMENT )
-        return;
+    function lang(): string
+    {
+        if (!env('localization.enabled'))
+            return env('localization.default_language');
 
-    global $debugger;
-    $debugger->addCollector(app()->make($class));
-}
-
-/**
- * gets an environment value for a specific key
- * @param string environment key
- * @param mixed default value if no key was present
- * @return array|mixed
- */
-function env( string $key, $default = null )
-{
-    return Miqu\Core\Environment::get( $key, $default );
-}
-
-
-/**
- * Return the default router for the app
- * @param string $abstract a fully qualified name of a class eg(Miqu\Core\Http\Request::class)
- * @return mixed
- * @throws ReflectionException
- */
-function make( string $abstract )
-{
-    return app()->make( $abstract );
-}
-
-/**
- * Return a singleton class of Miqu\Core\App
- * @return Miqu\Core\App|null
- */
-function app() : ?Miqu\Core\App
-{
-    try {
         global $container;
-        return $container->Resolve( Miqu\Core\App::class );
-    } catch (Exception $exception) {
-        return null;
-    }
-}
-
-/**
- * Return a singleton class of Miqu\Core\App
- * @return ServerRequest
- */
-function request() : ServerRequest
-{
-    return app()->request();
-}
-
-/**
- * @return \Miqu\Core\Http\HttpResponse
- */
-function response(): \Miqu\Core\Http\HttpResponse
-{
-    return new \Miqu\Core\Http\HttpResponse;
-}
-
-/**
- * Return the default router for the app
- * @return Router
- */
-function router() : Router
-{
-    return app()->router();
-}
-
-/**
- * @param array $rules
- * @param array $attributes
- * @return Validation
- */
-function validate( array $rules, array $attributes = [] ): Validation
-{
-    $validator = new Validator;
-    $data = array_merge( $_POST, $_GET, $_FILES );
-    return $validator->validate( $data, $rules, $attributes );
-}
-
-/**
- * Return the default router for the app
- * @param string $channel
- * @return Logger|null
- */
-function logger(string $channel = 'default') : ?Logger
-{
-    if ( ! env('logging.enabled') )
-        return null;
-
-    return LogManager::get($channel);
-}
-
-/**
- * Return a ready to use instance of the Mailer class
- * @return Miqu\Core\Mailer
- * @throws ReflectionException
- */
-function mailer() : Miqu\Core\Mailer
-{
-    return make( Miqu\Core\Mailer::class );
-}
-
-/**
- * Return the default router for the app
- * @param string $view_name The relative path for the view file in (dot) notation
- * @param array $data
- * @return IView
- * @throws ReflectionException
- */
-function view( string $view_name, array $data ) : IView
-{
-    /** @var IView $view */
-    $view = app()->make(IView::class);
-    $view->with($data)->view($view_name);
-    return $view;
-}
-
-/**
- * Returns an instance of Gaufrette\Filesystem based on the storage configuration in .env.php
- * @return Filesystem
- */
-function storage(): Filesystem
-{
-    $rootPath = (string)string(BASE_DIRECTORY)->trimRight(DIRECTORY_SEPARATOR)->append(env('storage.folder'));
-    $adapter = new LocalAdapter(
-        $rootPath,
-        env('storage.auto_create'),
-        env('storage.permissions')
-    );
-    return new Filesystem($adapter);
-}
-
-/**
- * Triggers an event and all of it's listeners.
- * @param EventBase $event instance of an event
- * @return void
- * @throws Exception
- */
-function event( EventBase $event ) : void
-{
-    $event->boot();
-
-    if ( $event->getListenersCount() < 1 )
-        return;
-
-    $event->dispatch();
-}
-
-
-/**
- * Prints out a hidden input field with a csrf token to be validated in the next request.
- * @return string
- * @throws Exception
- */
-function csrf() : string
-{
-    if ( session( 'csrf_token' ) )
-        $token = session( 'csrf_token' );
-    else
-    {
-        $token = bin2hex( random_bytes( 32 ) );
-        session( 'csrf_token', $token );
+        try {
+            /** @var LocalizationManager $manager */
+            $manager = $container->Resolve(LocalizationManager::class);
+            return $manager->getLanguage();
+        } catch (Exception $ex) {
+            return env('localization.default_language');
+        }
     }
 
-    return "<input type='hidden' name='csrf_token' value='$token'>";
-}
-
-/**
- * Validates a csrf token sent with the request.
- * @param string $token The token sent with the request
- * @return bool
- */
-function validate_csrf( string $token ): bool
-{
-    $stored = session( 'csrf_token' );
-
-    if ( $stored != $token )
-        return false;
-
-    unset( $_SESSION[ 'csrf_token' ] );
-
-    return true;
-}
-
-function old(string $key)
-{
-    $serialized = session('old');
-
-    if ( ! $serialized )
-        return null;
-
-    $inputs = unserialize( $serialized );
-
-    if ( ! isset( $inputs[ $key ] ) )
-        return null;
-
-    return $inputs[ $key ];
-}
-
-/**
- * Gets the absolute Url of the public folder. Helpful to include an asset file
- * Usage: asset('css/stylesheet.css') will print http(s)://example.com/public/css/stylesheet.css
- * @param string $asset_path the relative path for the asset in question
- * @return string The full Url path for the asset
- */
-function asset( string $asset_path ): string
-{
-    return getBaseUrl() . 'public/' . $asset_path;
-}
-
-function url( string $route ) : string
-{
-    return getBaseUrl() . ltrim( $route );
-}
-
-/**
- * @throws Exception
- */
-function route( string $name ) : string
-{
-    $route = router()->getNamedRoute( $name );
-    if ( ! $route )
-        throw new Exception( "Route with the name of $name does not exist" );
-
-    return (string)string(getBaseUrl())->trimRight('/')->append($route->getPath());
-}
-
-/**
-* Fetches or sets a session value based on a key
-*
-* @param string $key
-* @param string $value
-*
-* @return mixed a session value if no value has been provided, or boolean if a session has been set.
-*/
-function session() 
-{
-    $args = func_get_args();
-
-    $args_count = count( $args );
-
-    if ( $args_count < 1 ) 
+    function debug($variable): void
     {
-        return false;
+        if (env('environment') !== AppEnvironment::DEVELOPMENT)
+            return;
+
+        global $debugger;
+        $debugger['messages']->addMessage($variable);
     }
 
-    $key = $args[0];
-
-    if ( $args_count == 1 ) 
+    function debugBarAssets(): string
     {
+        if (env('environment') !== AppEnvironment::DEVELOPMENT)
+            return '';
 
-        if ( ! isset( $_SESSION[$key] ) ) 
-        {
+        global $debugger;
+        /** @var JavascriptRenderer $renderer */
+        $renderer = $debugger->getJavascriptRenderer();
+        $assets = $renderer->getAssets();
+        $html = '';
+        foreach ($assets as $group) {
+            if (is_array($group)) {
+                foreach ($group as $file) {
+                    $file_url = str_replace(BASE_DIRECTORY, url(''), $file);
+                    if (string($file)->endsWith('js'))
+                        $html .= "<script src='$file_url'></script>";
+                    else if (string($file)->endsWith('css'))
+                        $html .= "<link href='$file_url' rel='stylesheet'>";
+                }
+            }
+        }
+        return $html;
+    }
+
+    function renderDebugBar(): string
+    {
+        if (env('environment') !== AppEnvironment::DEVELOPMENT)
+            return '';
+
+        global $debugger;
+        $renderer = $debugger->getJavascriptRenderer();
+        return $renderer->render();
+    }
+
+    /**
+     * @throws ReflectionException
+     */
+    function registerDebugBarCollector(string $class): void
+    {
+        if (env('environment') !== AppEnvironment::DEVELOPMENT)
+            return;
+
+        global $debugger;
+        $debugger->addCollector(app()->make($class));
+    }
+
+    /**
+     * gets an environment value for a specific key
+     * @param string environment key
+     * @param mixed default value if no key was present
+     * @return array|mixed
+     */
+    function env(string $key, $default = null)
+    {
+        return Environment::get($key, $default);
+    }
+
+
+    /**
+     * Return the default router for the app
+     * @param string $abstract a fully qualified name of a class eg(Miqu\Core\Http\Request::class)
+     * @return mixed
+     * @throws ReflectionException
+     */
+    function make(string $abstract)
+    {
+        return app()->make($abstract);
+    }
+
+    /**
+     * Return a singleton class of Miqu\Core\App
+     * @return App|null
+     */
+    function app(): ?App
+    {
+        try {
+            global $container;
+            return $container->Resolve(App::class);
+        } catch (Exception $exception) {
+            return null;
+        }
+    }
+
+    /**
+     * Return a singleton class of Miqu\Core\App
+     * @return ServerRequest
+     */
+    function request(): ServerRequest
+    {
+        return app()->request();
+    }
+
+    /**
+     * @return HttpResponse
+     */
+    function response(): HttpResponse
+    {
+        return new HttpResponse;
+    }
+
+    /**
+     * Return the default router for the app
+     * @return Router
+     */
+    function router(): Router
+    {
+        return app()->router();
+    }
+
+    /**
+     * @param array $rules
+     * @param array $attributes
+     * @return Validation
+     */
+    function validate(array $rules, array $attributes = []): Validation
+    {
+        $validator = new Validator;
+        $data = array_merge($_POST, $_GET, $_FILES);
+        return $validator->validate($data, $rules, $attributes);
+    }
+
+    /**
+     * Return the default router for the app
+     * @param string $channel
+     * @return Logger|null
+     */
+    function logger(string $channel = 'default'): ?Logger
+    {
+        if (!env('logging.enabled'))
+            return null;
+
+        return LogManager::get($channel);
+    }
+
+    /**
+     * Return a ready to use instance of the Mailer class
+     * @return Mailer
+     * @throws ReflectionException
+     */
+    function mailer(): Mailer
+    {
+        return make(Mailer::class);
+    }
+
+    /**
+     * Return the default router for the app
+     * @param string $view_name The relative path for the view file in (dot) notation
+     * @param array $data
+     * @return IView
+     * @throws ReflectionException
+     */
+    function view(string $view_name, array $data): IView
+    {
+        /** @var IView $view */
+        $view = app()->make(IView::class);
+        $view->with($data)->view($view_name);
+        return $view;
+    }
+
+    /**
+     * Returns an instance of Gaufrette\Filesystem based on the storage configuration in .env.php
+     * @return Filesystem
+     */
+    function storage(): Filesystem
+    {
+        $rootPath = (string)string(BASE_DIRECTORY)->trimRight(DIRECTORY_SEPARATOR)->append(env('storage.folder'));
+        $adapter = new LocalAdapter(
+            $rootPath,
+            env('storage.auto_create'),
+            env('storage.permissions')
+        );
+        return new Filesystem($adapter);
+    }
+
+    /**
+     * Triggers an event and all of it's listeners.
+     * @param EventBase $event instance of an event
+     * @return void
+     * @throws Exception
+     */
+    function event(EventBase $event): void
+    {
+        $event->boot();
+
+        if ($event->getListenersCount() < 1)
+            return;
+
+        $event->dispatch();
+    }
+
+
+    /**
+     * Prints out a hidden input field with a csrf token to be validated in the next request.
+     * @return string
+     * @throws Exception
+     */
+    function csrf(): string
+    {
+        if (session('csrf_token'))
+            $token = session('csrf_token');
+        else {
+            $token = bin2hex(random_bytes(32));
+            session('csrf_token', $token);
+        }
+
+        return "<input type='hidden' name='csrf_token' value='$token'>";
+    }
+
+    /**
+     * Validates a csrf token sent with the request.
+     * @param string $token The token sent with the request
+     * @return bool
+     */
+    function validate_csrf(string $token): bool
+    {
+        $stored = session('csrf_token');
+
+        if ($stored != $token)
+            return false;
+
+        unset($_SESSION['csrf_token']);
+
+        return true;
+    }
+
+    function old(string $key)
+    {
+        $serialized = session('old');
+
+        if (!$serialized)
+            return null;
+
+        $inputs = unserialize($serialized);
+
+        if (!isset($inputs[$key]))
+            return null;
+
+        return $inputs[$key];
+    }
+
+    /**
+     * Gets the absolute Url of the public folder. Helpful to include an asset file
+     * Usage: asset('css/stylesheet.css') will print http(s)://example.com/public/css/stylesheet.css
+     * @param string $asset_path the relative path for the asset in question
+     * @return string The full Url path for the asset
+     */
+    function asset(string $asset_path): string
+    {
+        return getBaseUrl() . 'public/' . $asset_path;
+    }
+
+    function url(string $route): string
+    {
+        return getBaseUrl() . ltrim($route);
+    }
+
+    /**
+     * @throws Exception
+     */
+    function route(string $name): string
+    {
+        $route = router()->getNamedRoute($name);
+        if (!$route)
+            throw new Exception("Route with the name of $name does not exist");
+
+        return (string)string(getBaseUrl())->trimRight('/')->append($route->getPath());
+    }
+
+    /**
+     * Fetches or sets a session value based on a key
+     *
+     * @return mixed a session value if no value has been provided, or boolean if a session has been set.
+     */
+    function session()
+    {
+        $args = func_get_args();
+
+        $args_count = count($args);
+
+        if ($args_count < 1) {
             return false;
         }
 
-        return $_SESSION[$key];
+        $key = $args[0];
 
-    } 
-    else if ( $args_count == 2 ) 
-    {
+        if ($args_count == 1) {
 
-        $value = $args[1];
+            if (!isset($_SESSION[$key])) {
+                return false;
+            }
 
-        $_SESSION[$key] = $value;
+            return $_SESSION[$key];
 
-        return true;
+        } else if ($args_count == 2) {
 
-    }
-    return false;
-}
+            $value = $args[1];
 
-/**
- * Gets the origin url for the current request
- * http://localhost/myproject/index.php?id=8 -> http://localhost/myproject
- * @return string|null
- */
-function getBaseUrl(): ?string
-{
-    return UriInfo::getOrigin(app()->uri()) . '/';
-}
+            $_SESSION[$key] = $value;
 
-/**
-* Return the default value of the given value.
-* @param  mixed  $value
-* @return mixed
-*/
-function value($value)
-{
-    return $value instanceof Closure ? $value() : $value;
-}
+            return true;
 
-function dd( $variable ) : void
-{
-    ob_clean();
-    dump( $variable );
-    die();
-}
-
-function autoload_directory( $path ) 
-{
-    $items = glob( $path . DIRECTORY_SEPARATOR . '*' );
-    foreach( $items as $item )
-    {
-        if ( is_file( $item ) )
-        {
-            $isPhp = pathinfo( $item )[ 'extension' ] === 'php';
-            if ( $isPhp )
-                require_once $item;
         }
-        else
-        {
-            autoload_directory( $item );
+        return false;
+    }
+
+    /**
+     * Gets the origin url for the current request
+     * http://localhost/myproject/index.php?id=8 -> http://localhost/myproject
+     * @return string|null
+     */
+    function getBaseUrl(): ?string
+    {
+        return UriInfo::getOrigin(app()->uri()) . '/';
+    }
+
+    /**
+     * Return the default value of the given value.
+     * @param mixed $value
+     * @return mixed
+     */
+    function value($value)
+    {
+        return $value instanceof Closure ? $value() : $value;
+    }
+
+    function dd($variable): void
+    {
+        ob_clean();
+        dump($variable);
+        die();
+    }
+
+    function autoload_directory($path)
+    {
+        $items = glob($path . DIRECTORY_SEPARATOR . '*');
+        foreach ($items as $item) {
+            if (is_file($item)) {
+                $isPhp = pathinfo($item)['extension'] === 'php';
+                if ($isPhp)
+                    require_once $item;
+            } else {
+                autoload_directory($item);
+            }
         }
     }
 }
