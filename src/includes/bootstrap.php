@@ -50,7 +50,7 @@ if ( session_status() === PHP_SESSION_NONE )
 |--------------------------------------------------------------------------
 */
 /** @noinspection PhpIncludeInspection */
-require join(DIRECTORY_SEPARATOR, [ __DIR__,  '..', '..', 'vendor', 'autoload.php' ]);
+//require join(DIRECTORY_SEPARATOR, [ __DIR__,  '..', '..', 'vendor', 'autoload.php' ]);
 
 /*
 |--------------------------------------------------------------------------
