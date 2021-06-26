@@ -1,0 +1,22 @@
+<?php
+
+namespace Events\Listeners;
+
+use Miqu\Core\Events\EventBase;
+
+/**
+ * Listener class to handle events
+ */
+class {{class}}
+{
+    /**
+     * A function will be called within the event this class listens for
+     * 
+     * @param EventBase $event the event that has been raised
+     * @return void
+     */
+    public function handle( EventBase $event ) : void
+    {
+        //
+    }
+}

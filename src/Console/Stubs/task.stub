@@ -1,0 +1,13 @@
+<?php
+
+namespace Tasks;
+
+use Crontask\Tasks\Task;
+
+class {{class}} extends Task
+{
+    public function run()
+    {
+
+    }
+}

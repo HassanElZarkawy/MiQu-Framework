@@ -1,0 +1,57 @@
+<?php
+
+namespace Notifications;
+
+use Miqu\Core\Mailer;
+use Miqu\Core\Notifications\INotification;
+
+/**
+ * Every notification must implement INotification interface
+ */
+class {{class}} implements INotification
+{
+    /**
+     * {{class}} constructor
+     */
+    public function __construct()
+    {
+
+    }
+
+    /**
+     * Return an array of channels used to notify your notifiable.
+     * Supported channels are [ 'mail', 'database' ]
+     * 
+     * @return array
+     */
+    public function via() : array
+    {
+        return [ 'mail', 'database' ];
+    }
+
+    /**
+     * Return an instance of Mailer without sending it.
+     * The actual logic of figuring out should this mail be sent via SMTP or not
+     * is handled by the notifier class
+     * 
+     * @return Mailer
+     */
+    public function toMail() : Mailer
+    {
+        return (new Mailer)->setSubject( '' )
+            ->setSender( '' )->addReceiver( '' )
+            ->setContentPlain( '' );
+    }
+
+    /**
+     * Return an array to be stored in database for the notifiable.
+     * 
+     * @return array
+     */
+    public function toDatabase() : array
+    {
+        return [
+            
+        ];
+    }
+}

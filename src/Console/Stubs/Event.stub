@@ -1,0 +1,24 @@
+<?php
+
+namespace Events;
+
+use Miqu\Core\Events\EventBase;
+
+class {{class}} extends EventBase
+{
+    public function __construct()
+    {
+        
+    }
+
+    /**
+     * {inheritdoc}
+     */
+    public function boot() : void
+    {
+        $this->listeners = [
+            // add your listeners here
+            // Listener::class
+        ];
+    }
+}

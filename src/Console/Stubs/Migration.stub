@@ -1,0 +1,22 @@
+<?php
+
+use Illuminate\Database\Capsule\Manager as Capsule;
+use Illuminate\Database\Schema\Blueprint;
+
+class {{class}}
+{
+    /** @var string $name Table name */
+    private $name = '';
+
+    public function up()
+    {
+        Capsule::schema()->create($this->name, function( Blueprint $table) {
+            $table->id();
+        });
+    }
+
+    public function down()
+    {
+        Capsule::schema()->drop($this->name);
+    }
+}

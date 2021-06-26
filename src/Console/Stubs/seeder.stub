@@ -1,0 +1,27 @@
+<?php
+
+namespace Seeds;
+
+use Faker\Generator;
+
+class {{class}}
+{
+    /** @var int */
+    public $order = 1;
+
+    /** @var Generator */
+    public $faker;
+
+    /** @var int */
+    public $count = 50;
+
+    /** @var string */
+    public $model = \Models\User::class;
+
+    public function data() : array
+    {
+        return [
+
+        ];
+    }
+}
