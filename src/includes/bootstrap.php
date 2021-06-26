@@ -41,7 +41,7 @@ if ( session_status() === PHP_SESSION_NONE )
 | Include helper functions
 |--------------------------------------------------------------------------
 */
-require_once __DIR__ . '/functions.php';
+//require_once __DIR__ . '/functions.php';
 
 
 /*
@@ -49,7 +49,7 @@ require_once __DIR__ . '/functions.php';
 | Include composer autoloader
 |--------------------------------------------------------------------------
 */
-require __DIR__ . '../../vendor/autoload.php';
+//require __DIR__ . '../../vendor/autoload.php';
 
 /*
 |--------------------------------------------------------------------------
