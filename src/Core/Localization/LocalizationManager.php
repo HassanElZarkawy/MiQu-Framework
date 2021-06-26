@@ -85,7 +85,7 @@ class LocalizationManager
 
     private function isLanguageCachedBefore() : bool
     {
-        if ( env( 'environment' ) === AppEnvironment::DEVELOPMENT || env( 'environment' ) === AppEnvironment::TESTING )
+        if ( \Miqu\Helpers\env( 'environment' ) === AppEnvironment::DEVELOPMENT || \Miqu\Helpers\env( 'environment' ) === AppEnvironment::TESTING )
             return false;
 
         if ( file_exists( $this->getLanguageCacheFilePath() ) )

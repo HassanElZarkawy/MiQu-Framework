@@ -85,7 +85,7 @@ $container = new Miqu\Core\Container;
 if ( \Miqu\Helpers\env( 'cache.enabled' ) ) {
     try {
         CacheManager::setDefaultConfig(new ConfigurationOption([
-            'path' => BASE_DIRECTORY . env('cache.path'),
+            'path' => BASE_DIRECTORY . \Miqu\Helpers\env('cache.path'),
         ]));
     } catch (PhpfastcacheInvalidConfigurationException | ReflectionException $e) {
         // fail silently

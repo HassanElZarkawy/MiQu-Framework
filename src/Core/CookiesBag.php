@@ -19,7 +19,7 @@ class CookiesBag
 
     public static function addToResponse(HttpResponse $response)
     {
-        collect(self::$cookies)->each(function(SetCookie $cookie) use ($response) {
+        \Miqu\Helpers\collect(self::$cookies)->each(function(SetCookie $cookie) use ($response) {
             $response->setCookie(
                 $cookie->getName(),
                 $cookie->getValue(),

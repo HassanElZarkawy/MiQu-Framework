@@ -75,7 +75,7 @@ class CapsuleManager
 
     private static function getConfiguration(string $path, array $mapping) : Collection
     {
-        return collect($mapping)->map(function ($item) use($path) {
+        return \Miqu\Helpers\collect($mapping)->map(function ($item) use($path) {
             return \Miqu\Helpers\env( $path . $item );
         });
     }

@@ -16,7 +16,7 @@ trait InvokesServiceProviders
         if ( ! \Miqu\Helpers\env('providers') )
             return;
 
-        $this->providers = collect(\Miqu\Helpers\env('providers'))->map(function($abstract) {
+        $this->providers = \Miqu\Helpers\collect(\Miqu\Helpers\env('providers'))->map(function($abstract) {
             return $this->container->Resolve($abstract);
         })->filter(function($provider) {
             return $provider instanceof ServiceProvider;

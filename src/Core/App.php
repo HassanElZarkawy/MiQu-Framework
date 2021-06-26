@@ -14,6 +14,8 @@ use League\Route\Http\Exception\UnauthorizedException;
 use League\Route\Router;
 use League\Uri\Http;
 use ReflectionException;
+use function Miqu\Helpers\response;
+use function Miqu\Helpers\session;
 
 class App
 {
