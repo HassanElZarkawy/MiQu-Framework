@@ -49,7 +49,8 @@ if ( session_status() === PHP_SESSION_NONE )
 | Include composer autoloader
 |--------------------------------------------------------------------------
 */
-require __DIR__ . '../../vendor/autoload.php';
+/** @noinspection PhpIncludeInspection */
+require __DIR__ . join(DIRECTORY_SEPARATOR, [ '..', '..', 'vendor', 'autoload.php' ]);
 
 /*
 |--------------------------------------------------------------------------
