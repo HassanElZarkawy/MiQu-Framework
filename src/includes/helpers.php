@@ -2,6 +2,7 @@
 
 namespace Miqu\Helpers {
 
+    use Closure;
     use Miqu\Core\Environment;
     use Tightenco\Collect\Support\Collection;
 
@@ -19,5 +20,15 @@ namespace Miqu\Helpers {
     function env(string $key, $default = null)
     {
         return Environment::get($key, $default);
+    }
+
+    /**
+     * Return the default value of the given value.
+     * @param mixed $value
+     * @return mixed
+     */
+    function value($value)
+    {
+        return $value instanceof Closure ? $value() : $value;
     }
 }

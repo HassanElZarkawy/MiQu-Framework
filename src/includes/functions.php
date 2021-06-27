@@ -403,16 +403,6 @@ function getBaseUrl(): ?string
     return UriInfo::getOrigin(app()->uri()) . '/';
 }
 
-/**
- * Return the default value of the given value.
- * @param mixed $value
- * @return mixed
- */
-function value($value)
-{
-    return $value instanceof Closure ? $value() : $value;
-}
-
 function dd($variable): void
 {
     ob_clean();
