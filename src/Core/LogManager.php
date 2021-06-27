@@ -5,7 +5,6 @@ namespace Miqu\Core;
 use Monolog\Formatter\HtmlFormatter;
 use Monolog\Handler\RotatingFileHandler;
 use Monolog\Logger;
-use function Miqu\Helpers\string;
 
 class LogManager
 {

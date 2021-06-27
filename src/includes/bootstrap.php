@@ -10,8 +10,6 @@ use Phpfastcache\CacheManager;
 use Phpfastcache\Config\ConfigurationOption;
 use Phpfastcache\Exceptions\PhpfastcacheInvalidConfigurationException;
 use Whoops\Run;
-use function Miqu\Helpers\logger;
-use function Miqu\Helpers\response;
 
 /*
 |--------------------------------------------------------------------------
@@ -131,7 +129,6 @@ $container->Register( Miqu\Core\Interfaces\IViewEngine::class, function() {
 if ( \Miqu\Helpers\env('environment') === Miqu\Core\AppEnvironment::PRODUCTION )
 {
     register_shutdown_function(
-        /** @throws ReflectionException */
         function() {
             $error = error_get_last();
             if ( isset( $error[ 'message' ] ) )
@@ -142,7 +139,6 @@ if ( \Miqu\Helpers\env('environment') === Miqu\Core\AppEnvironment::PRODUCTION )
 }
 else
     (new Run)->pushHandler(new Whoops\Handler\PrettyPageHandler)->register();
-
 
 /*
 |--------------------------------------------------------------------------
@@ -159,4 +155,4 @@ $container->RegisterSingleton( Miqu\Core\App::class, function () {
 |--------------------------------------------------------------------------
 */
 if ( isset( $_SERVER['HTTP_HOST'] ) && ! empty( $_SERVER[ 'HTTP_HOST' ] ) )
-    \Miqu\Helpers\autoload_directory( BASE_DIRECTORY . 'Routes/' );
+    autoload_directory( BASE_DIRECTORY . 'Routes/' );
