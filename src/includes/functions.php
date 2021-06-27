@@ -403,13 +403,6 @@ function getBaseUrl(): ?string
     return UriInfo::getOrigin(app()->uri()) . '/';
 }
 
-function dd($variable): void
-{
-    ob_clean();
-    dump($variable);
-    die();
-}
-
 function autoload_directory($path)
 {
     $items = glob($path . DIRECTORY_SEPARATOR . '*');
