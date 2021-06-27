@@ -17,7 +17,7 @@ trait CommandHelpers
      */
     public function stubContents(string $stub) : string
     {
-        $stubFolder = getcwd() . '/App/Console/Stubs/';
+        $stubFolder = join( DIRECTORY_SEPARATOR, [ __DIR__, '..', 'Stubs', '' ] );
         $stubs_file = "{$stubFolder}{$stub}.stub";
 
         $handle = fopen( $stubs_file, 'r' );
