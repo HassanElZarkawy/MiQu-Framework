@@ -56,7 +56,7 @@ if ( session_status() === PHP_SESSION_NONE )
 | Load Environment variables
 |--------------------------------------------------------------------------
 */
-Miqu\Core\Environment::load( BASE_DIRECTORY . '.env.php' );
+Miqu\Core\Environment::load( BASE_DIRECTORY . 'config.php' );
 
 if ( \Miqu\Helpers\env( 'environment' ) === AppEnvironment::DEVELOPMENT )
 {

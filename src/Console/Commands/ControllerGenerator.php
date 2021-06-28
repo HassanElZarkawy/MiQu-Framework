@@ -29,6 +29,9 @@ class ControllerGenerator extends Command
     {
         $contents = $this->stubContents( 'Controller' );
 
+        $this->name = (string)string($this->name)->replace('controller', '')->replace('Controller', '')
+            ->append('Controller');
+
         $replacements = [
             '{{class}}' => $this->name
         ];
