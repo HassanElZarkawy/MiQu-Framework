@@ -1,6 +1,6 @@
 <?php
 
-namespace Miqu\Core\Views;
+namespace Miqu\Core\Views\DataTables;
 
 use Exception;
 use Illuminate\Database\Eloquent\Collection;

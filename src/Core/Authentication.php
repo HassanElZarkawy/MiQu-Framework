@@ -2,15 +2,13 @@
 
 namespace Miqu\Core;
 
-use Miqu\Core\Http\HeadersBag;
 use Carbon\Carbon;
 use Exception;
 use HansOtt\PSR7Cookies\InvalidArgumentException;
 use HansOtt\PSR7Cookies\SetCookie;
-use Models\Security\Token;
-use Models\User;
+use Miqu\Core\Models\Security\Token;
+use Miqu\Core\Models\User;
 use Psr\Http\Message\ServerRequestInterface;
-use function Miqu\Helpers\logger;
 
 class Authentication
 {

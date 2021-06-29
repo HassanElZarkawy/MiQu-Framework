@@ -1,6 +1,6 @@
 <?php
 
-namespace Miqu\Core\Views;
+namespace Miqu\Core\Views\DataTables;
 
 trait OrdersModel
 {

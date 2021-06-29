@@ -48,7 +48,7 @@ function string($str, string $encoding = null): Stringy
  */
 function __(string $key): string
 {
-    if ( ! env('localization.enabled') )
+    if ( ! \Miqu\Helpers\env('localization.enabled') )
         return $key;
 
     global $container;
@@ -63,7 +63,7 @@ function __(string $key): string
 
 function _n(string $number, int $decimals = 0): string
 {
-    if (!env('localization.enabled'))
+    if ( ! \Miqu\Helpers\env('localization.enabled') )
         return $number;
 
     $locale = lang();
@@ -78,8 +78,8 @@ function _n(string $number, int $decimals = 0): string
 
 function lang(): string
 {
-    if (!env('localization.enabled'))
-        return env('localization.default_language');
+    if ( ! \Miqu\Helpers\env('localization.enabled'))
+        return \Miqu\Helpers\env('localization.default_language');
 
     global $container;
     try {
@@ -87,13 +87,13 @@ function lang(): string
         $manager = $container->Resolve(LocalizationManager::class);
         return $manager->getLanguage();
     } catch (Exception $ex) {
-        return env('localization.default_language');
+        return \Miqu\Helpers\env('localization.default_language');
     }
 }
 
 function debug($variable): void
 {
-    if (env('environment') !== AppEnvironment::DEVELOPMENT)
+    if (\Miqu\Helpers\env('environment') !== AppEnvironment::DEVELOPMENT)
         return;
 
     global $debugger;
@@ -102,7 +102,7 @@ function debug($variable): void
 
 function debugBarAssets(): string
 {
-    if (env('environment') !== AppEnvironment::DEVELOPMENT)
+    if (\Miqu\Helpers\env('environment') !== AppEnvironment::DEVELOPMENT)
         return '';
 
     global $debugger;
@@ -126,7 +126,7 @@ function debugBarAssets(): string
 
 function renderDebugBar(): string
 {
-    if (env('environment') !== AppEnvironment::DEVELOPMENT)
+    if (\Miqu\Helpers\env('environment') !== AppEnvironment::DEVELOPMENT)
         return '';
 
     global $debugger;
@@ -139,7 +139,7 @@ function renderDebugBar(): string
  */
 function registerDebugBarCollector(string $class): void
 {
-    if (env('environment') !== AppEnvironment::DEVELOPMENT)
+    if (\Miqu\Helpers\env('environment') !== AppEnvironment::DEVELOPMENT)
         return;
 
     global $debugger;
@@ -190,6 +190,7 @@ function response(): HttpResponse
 
 /**
  * Return the default router for the app
+ * Return the default router for the app
  * @return Router
  */
 function router(): Router
@@ -216,7 +217,7 @@ function validate(array $rules, array $attributes = []): Validation
  */
 function logger(string $channel = 'default'): ?Logger
 {
-    if (!env('logging.enabled'))
+    if ( ! \Miqu\Helpers\env('logging.enabled') )
         return null;
 
     return LogManager::get($channel);
@@ -253,11 +254,11 @@ function view(string $view_name, array $data): IView
  */
 function storage(): Filesystem
 {
-    $rootPath = (string)string(BASE_DIRECTORY)->trimRight(DIRECTORY_SEPARATOR)->append(env('storage.folder'));
+    $rootPath = (string)string(BASE_DIRECTORY)->trimRight(DIRECTORY_SEPARATOR)->append(\Miqu\Helpers\env('storage.folder'));
     $adapter = new LocalAdapter(
         $rootPath,
-        env('storage.auto_create'),
-        env('storage.permissions')
+        \Miqu\Helpers\env('storage.auto_create'),
+        \Miqu\Helpers\env('storage.permissions')
     );
     return new Filesystem($adapter);
 }
