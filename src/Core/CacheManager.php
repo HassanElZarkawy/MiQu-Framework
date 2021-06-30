@@ -21,6 +21,9 @@ class CacheManager
      */
     public static function remember(string $key, callable $callback, int $expires)
     {
+        if ( ! \Miqu\Helpers\env( 'cache.enabled' ) )
+            return call_user_func( $callback );
+
         $instance = \Phpfastcache\CacheManager::getInstance( \Miqu\Helpers\env('cache.driver') );
         $cachedObject = $instance->getItem($key);
         if ( ! $cachedObject->isHit() )
@@ -47,6 +50,9 @@ class CacheManager
      */
     public static function get(string $key)
     {
+        if ( ! \Miqu\Helpers\env( 'cache.enabled' ) )
+            return null;
+
         $instance = \Phpfastcache\CacheManager::getInstance('files');
         $cachedObject = $instance->getItem($key);
         if ( $cachedObject->isHit() )
@@ -65,6 +71,9 @@ class CacheManager
      */
     public static function delete(string $key): bool
     {
+        if ( ! \Miqu\Helpers\env( 'cache.enabled' ) )
+            return false;
+
         $instance = \Phpfastcache\CacheManager::getInstance('files');
         return $instance->deleteItem($key);
     }
@@ -79,6 +88,9 @@ class CacheManager
      */
     public static function clear(): bool
     {
+        if ( ! \Miqu\Helpers\env( 'cache.enabled' ) )
+            return false;
+
         $instance = \Phpfastcache\CacheManager::getInstance('files');
         return $instance->clear();
     }

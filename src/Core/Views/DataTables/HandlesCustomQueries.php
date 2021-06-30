@@ -3,7 +3,7 @@
 namespace Miqu\Core\Views\DataTables;
 
 use Illuminate\Database\Eloquent\Builder;
-use Tightenco\Collect\Support\Collection;
+use Illuminate\Support\Collection;
 
 trait HandlesCustomQueries
 {
