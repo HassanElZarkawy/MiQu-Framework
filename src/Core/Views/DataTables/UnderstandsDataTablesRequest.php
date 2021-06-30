@@ -73,12 +73,12 @@ trait UnderstandsDataTablesRequest
             $single = $data[ 'order' ][ 0 ];
             $this->orderBy = $single[ 'column' ];
             if ( is_numeric( $this->orderBy ) )
-                $this->orderBy = $this->instance->primaryKey;
+                $this->orderBy = $this->instance->getKeyName();
             $this->direction = $single[ 'dir' ];
         }
         else
         {
-            $this->orderBy = $this->instance->primaryKey;
+            $this->orderBy = $this->instance->getKeyName();
             $this->direction = 'DESC';
         }
     }
