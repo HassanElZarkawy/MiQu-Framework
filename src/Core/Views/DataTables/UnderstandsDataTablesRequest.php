@@ -41,9 +41,6 @@ trait UnderstandsDataTablesRequest
      */
     public $search;
 
-    /**
-     * @throws ReflectionException
-     */
     public function processRequest()
     {
         $data = request()->getParsedBody();
@@ -75,6 +72,8 @@ trait UnderstandsDataTablesRequest
         {
             $single = $data[ 'order' ][ 0 ];
             $this->orderBy = $single[ 'column' ];
+            if ( is_numeric( $this->orderBy ) )
+                $this->orderBy = $this->instance->primaryKey;
             $this->direction = $single[ 'dir' ];
         }
         else
