@@ -57,11 +57,11 @@ trait UnderstandsDataTablesRequest
             return $item[ 'data' ];
         })->all();
 
-        $this->search = $data[ 'search' ][ 'value' ];
+        $this->search = isset( $data[ 'search' ] ) ? ( $data[ 'search' ][ 'value' ] ?? null ) : null;
 
-        $this->draw = $data[ 'draw' ];
+        $this->draw = $data[ 'draw' ] ?? [];
 
-        $this->customQueries = $data[ 'additional' ] ?: [];
+        $this->customQueries = $data['additional'] ?? [];
 
         $this->manageOrderColumn( $data );
     }
