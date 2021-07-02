@@ -8,7 +8,14 @@ use Tightenco\Collect\Support\Collection;
 
 class CapsuleManager
 {
+    /**
+     * @var bool
+     */
     private static $booted = false;
+
+    /**
+     * @var Manager
+     */
     private static $capsule = null;
 
     /**

@@ -44,7 +44,6 @@ class App
         global $container;
         $this->container = $container;
 
-        $this->registerProviders();
         $this->request = $this->getServerRequest();
         $this->uri = Http::createFromServer($_SERVER);
 
@@ -52,6 +51,8 @@ class App
 
         if ( strtolower( $this->request->getMethod() ) === 'post' )
             session( 'old', serialize( $this->request->getParsedBody() ) );
+
+        $this->registerProviders();
     }
 
     /**

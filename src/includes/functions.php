@@ -142,8 +142,9 @@ function registerDebugBarCollector(string $class): void
     if (\Miqu\Helpers\env('environment') !== AppEnvironment::DEVELOPMENT)
         return;
 
+    global $container;
     global $debugger;
-    $debugger->addCollector(app()->make($class));
+    $debugger->addCollector( $container->Resolve( $class ) );
 }
 
 /**

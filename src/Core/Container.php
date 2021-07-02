@@ -74,16 +74,13 @@ class Container implements IContainer, ContainerInterface
         if ( isset( $this->singletons[ $abstract ] ) )
         {
             if ( is_callable( $this->singletons[ $abstract ] ) )
-            {
-                $func = $this->singletons[ $abstract ];
-                $this->singletons[ $abstract ] = $func( $this );
-            }
+                $this->singletons[ $abstract ] = call_user_func_array( $this->singletons[ $abstract ], [ $this ] );
 
             return $this->singletons[ $abstract ];
         }
 
         if ( isset( $this->bindings[ $abstract ] ) )
-            return $this->bindings[ $abstract ]( $this );
+            return call_user_func_array( $this->bindings[ $abstract ], [ $this ] );
 
         $reflection = new ReflectionClass( $abstract );
         $dependencies = $this->buildDependencies( $reflection );

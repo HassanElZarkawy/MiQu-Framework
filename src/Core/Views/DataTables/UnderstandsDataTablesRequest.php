@@ -2,8 +2,6 @@
 
 namespace Miqu\Core\Views\DataTables;
 
-use ReflectionException;
-
 trait UnderstandsDataTablesRequest
 {
     /**
@@ -25,6 +23,11 @@ trait UnderstandsDataTablesRequest
      * @var array
      */
     public $request_columns = [];
+
+    /**
+     * @var array
+     */
+    public $column_search = [];
 
     /**
      * @var string
@@ -64,6 +67,13 @@ trait UnderstandsDataTablesRequest
         $this->customQueries = $data['additional'] ?? [];
 
         $this->manageOrderColumn( $data );
+
+        if ( isset( $data[ 'phrase' ] ) )
+        {
+            collect($data['phrase'])->each(function($search, $column) {
+                $this->column_search[ $column ] = $search;
+            });
+        }
     }
 
     private function manageOrderColumn(?array $data)
