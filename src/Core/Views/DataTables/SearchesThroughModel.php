@@ -27,7 +27,7 @@ trait SearchesThroughModel
     private function performColumnSearch()
     {
         $this->instance->where(function(Builder $query) {
-            collect($this->column_search)->each(function($column, $search) use($query) {
+            collect($this->column_search)->each(function($search, $column) use($query) {
                 if ( ! in_array( $column, $this->columns ) || strlen( $search ) === 0 )
                     return;
                 $query->where($column, 'LIKE', "{$search}%");
