@@ -8,10 +8,10 @@ trait SearchesThroughModel
 {
     public function searchInAttributes()
     {
-        if ( empty( $this->search ) || is_null( $this->search ) || strlen( $this->search ) === 0 )
+        if ( ! empty( $this->search ) && ! is_null( $this->search ) && strlen( $this->search ) > 0 )
             $this->performGlobalSearch();
 
-        if ( count( $this->column_search ) === 0 )
+        if ( count( $this->column_search ) !== 0 )
             $this->performColumnSearch();
     }
 
