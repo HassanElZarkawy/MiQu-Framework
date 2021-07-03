@@ -26,12 +26,11 @@ trait SearchesThroughModel
 
     private function performColumnSearch()
     {
-        collect($this->column_search)->each(function($column, $search) {
-            if ( ! in_array( $column, $this->columns ) || strlen( $search ) === 0 )
-                return;
-
-            $this->instance->where(function(Builder $query) use( $column, $search ) {
-                $query->where($column, 'LIKE', "%{$search}%");
+        $this->instance->where(function(Builder $query) {
+            collect($this->column_search)->each(function($column, $search) use($query) {
+                if ( ! in_array( $column, $this->columns ) || strlen( $search ) === 0 )
+                    return;
+                $query->where($column, 'LIKE', "{$search}%");
             });
         });
     }
