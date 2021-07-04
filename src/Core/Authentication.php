@@ -182,7 +182,7 @@ class Authentication
             $cookies = $this->request->getCookieParams();
             return array_key_exists( $this->cookieName, $cookies );
         } catch(Exception $exception) {
-            if (env('logger.enabled'))
+            if (\Miqu\Helpers\env('logger.enabled'))
                 logger()->warning('Unable to get Cookie params from request object at Authentication::tokenPresent()');
             return false;
         }

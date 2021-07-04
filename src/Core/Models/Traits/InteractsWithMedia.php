@@ -200,6 +200,6 @@ trait InteractsWithMedia
     {
         return (new Uploader( $file ))->allowed_extensions( $this->media_allowed_extensions )
             ->max_size(100)
-            ->path( env( 'storage.path' ) );
+            ->path( \Miqu\Helpers\env( 'storage.path' ) );
     }
 }
