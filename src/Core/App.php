@@ -14,6 +14,7 @@ use League\Route\Http\Exception\UnauthorizedException;
 use League\Route\Router;
 use League\Uri\Http;
 use ReflectionException;
+use function Laminas\Diactoros\normalizeUploadedFiles;
 
 class App
 {
@@ -126,7 +127,8 @@ class App
     {
         $request_body = $this->parseRequestBody();
         $this->request = new HttpRequest(
-            $_SERVER, $_FILES, new Uri($_SERVER['REQUEST_URI']),
+            $_SERVER, normalizeUploadedFiles($_FILES),
+            new Uri($_SERVER['REQUEST_URI']),
             $_SERVER['REQUEST_METHOD'], 'php://input', getallheaders(),
             $_COOKIE, $_GET, $request_body, $_SERVER['SERVER_PROTOCOL']
         );
