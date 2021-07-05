@@ -4,6 +4,7 @@ namespace Miqu\Core\Models\Traits;
 
 use Exception;
 use iamdual\Uploader;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Miqu\Core\Models\Image;
 
@@ -135,10 +136,9 @@ trait InteractsWithMedia
 
     /**
      * @param string $type
-     * @return Model
-     * @throws Exception
+     * @return Builder
      */
-    private function baseQuery( string $type ) : Model
+    private function baseQuery( string $type ) : Builder
     {
         return Image::where('object_id', $this->{$this->primaryKey})
             ->where('object_type', get_class($this))
