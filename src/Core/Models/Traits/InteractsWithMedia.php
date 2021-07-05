@@ -111,7 +111,7 @@ trait InteractsWithMedia
                         'path' => $path
                     ]);
                 }
-        );
+            );
         return true;
     }
 
@@ -158,7 +158,7 @@ trait InteractsWithMedia
 
         return collect($data)->map(function($item) {
             return $this->uploadFile($item);
-        })->filter(function($item) {
+        })->reject(function($item) {
             return $item === null;
         })->map(function($item) {
             return str_replace( BASE_DIRECTORY, '', $item );
@@ -198,8 +198,15 @@ trait InteractsWithMedia
      */
     private function getUploader(array $file): Uploader
     {
+        $path = (string)string(BASE_DIRECTORY)->trimRight('/')->append(DIRECTORY_SEPARATOR)
+            ->append(\Miqu\Helpers\env('storage.folder'))->replace('/', DIRECTORY_SEPARATOR)
+            ->trimRight(DIRECTORY_SEPARATOR);
+
+        if ( ! storage()->isDirectory( $path ) )
+            mkdir( $path, 0777, true );
+
         return (new Uploader( $file ))->allowed_extensions( $this->media_allowed_extensions )
             ->max_size(100)
-            ->path( \Miqu\Helpers\env( 'storage.path' ) );
+            ->path( $path );
     }
 }
