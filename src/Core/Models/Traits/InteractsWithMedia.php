@@ -202,7 +202,7 @@ trait InteractsWithMedia
             ->append(\Miqu\Helpers\env('storage.folder'))->replace('/', DIRECTORY_SEPARATOR)
             ->trimRight(DIRECTORY_SEPARATOR);
 
-        if ( ! storage()->isDirectory( $path ) )
+        if ( ! is_dir( $path ) )
             mkdir( $path, 0777, true );
 
         return (new Uploader( $file ))->allowed_extensions( $this->media_allowed_extensions )
