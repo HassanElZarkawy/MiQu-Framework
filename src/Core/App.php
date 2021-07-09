@@ -84,9 +84,6 @@ class App
 
         unset( $_SESSION[ 'old' ] );
 
-        if ( $this->outputBufferStarted() )
-            $this->clearOutputBuffer();
-
         (new SapiEmitter)->emit($response);
         exit;
     }

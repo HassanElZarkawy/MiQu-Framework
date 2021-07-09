@@ -131,6 +131,10 @@ if ( \Miqu\Helpers\env('environment') === Miqu\Core\AppEnvironment::PRODUCTION )
     register_shutdown_function(
         function() {
             $error = error_get_last();
+
+            if ( ! $error ) // for some reason this function is getting called sometimes without any errors. If so just ignore it.
+                return;
+
             if ( isset( $error[ 'message' ] ) )
                 logger()->error( $error[ 'message' ] );
 
