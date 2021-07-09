@@ -22,6 +22,9 @@ class InjectorStrategy extends ApplicationStrategy
 
         $controller = $route->getCallable($container);
 
+        if ( $controller instanceof \Closure )
+            return call_user_func_array( $controller, [ $request ] );
+
         return call_user_func_array( [ $controller[0], $controller[1] ], [ $request ] );
     }
 }
