@@ -24,6 +24,14 @@ trait InvokesServiceProviders
             /** @var $provider ServiceProvider */
             $provider->container = $this->container;
             $provider->register();
-        })->all();
+        });
+    }
+
+    public function bootServiceProviders()
+    {
+        $this->providers->each(function($provider) {
+            /** @var $provider ServiceProvider */
+            $provider->boot();
+        });
     }
 }

@@ -12,4 +12,6 @@ abstract class ServiceProvider
     public $container;
 
     public abstract function register();
+
+    public abstract function boot();
 }

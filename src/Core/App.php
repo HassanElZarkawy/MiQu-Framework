@@ -63,6 +63,7 @@ class App
      */
     public function start() : void
     {
+        $this->bootServiceProviders();
         try {
             $response = $this->router->dispatch($this->request);
         } catch(NotFoundException $notFoundException) {
