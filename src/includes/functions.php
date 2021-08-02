@@ -37,7 +37,7 @@ function auth(): Authentication
  * @throws InvalidArgumentException if an array or object without a
  *         __toString method is passed as the first argument
  */
-function string($str, string $encoding = null): Stringyon
+function string($str, string $encoding = null): Stringy
 {
     return new Stringy($str, $encoding);
 }
