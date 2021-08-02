@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Collection;
 use Miqu\Core\Models\Notification;
-use Services\Notifications\Contracts\INotification;
-use Services\Notifications\Notifier;
+use Miqu\Core\Notifications\INotification;
+use Miqu\Core\Notifications\Notifier;
 
 trait Notifiable
 {

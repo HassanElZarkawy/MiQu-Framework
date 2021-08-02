@@ -35,6 +35,9 @@ class HttpResponse extends Response implements ResponseInterface
         $engine->view($name);
         $content = $engine->with($arguments)->content();
         $this->getBody()->write($content);
+        $this->headers['Content-Type'] = [
+            'application/json', 'charset=utf-8'
+        ];
         return $this;
     }
 

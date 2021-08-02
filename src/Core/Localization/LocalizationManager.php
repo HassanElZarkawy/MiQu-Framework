@@ -5,7 +5,6 @@ namespace Miqu\Core\Localization;
 use Miqu\Core\AppEnvironment;
 use Exception;
 use Tightenco\Collect\Support\Collection;
-use function Miqu\Helpers\string;
 
 class LocalizationManager
 {

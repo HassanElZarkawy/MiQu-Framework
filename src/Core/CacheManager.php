@@ -15,11 +15,11 @@ class CacheManager
 {
     /**
      * @param string $key
-     * @param callable $callback
      * @param int $expires
+     * @param callable $callback
      * @return mixed
      */
-    public static function remember(string $key, callable $callback, int $expires)
+    public static function remember(string $key, int $expires, callable $callback)
     {
         if ( ! \Miqu\Helpers\env( 'cache.enabled' ) )
             return call_user_func( $callback );

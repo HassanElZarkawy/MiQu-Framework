@@ -138,6 +138,15 @@ $container->RegisterSingleton( Miqu\Core\App::class, function () {
     return new Miqu\Core\App();
 } );
 
+
+/*
+|--------------------------------------------------------------------------
+| Register Datatables Provider
+|--------------------------------------------------------------------------
+*/
+$container->Register(\Miqu\Core\Views\DataTables\Contracts\IDataTableResults::class, \Miqu\Core\Views\DataTables\DataTableResults::class);
+$container->Register( \Miqu\Core\Views\DataTables\Contracts\IDataTable::class, \Miqu\Core\Views\DataTables\DataTable::class);
+
 /*
 |--------------------------------------------------------------------------
 | Load all the routes for HTTP requests

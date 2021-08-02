@@ -5,6 +5,7 @@ namespace Miqu\Core\Views\DataTables;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Miqu\Core\Views\DataTables\Contracts\IDataTableResults;
 use ReflectionException;
 
 class DataTable
@@ -31,9 +32,10 @@ class DataTable
     }
 
     /**
-     * @return array
+     * @return IDataTableResults
+     * @throws ReflectionException
      */
-    public function process(): array
+    public function process(): IDataTableResults
     {
         $this->handleCustomQueries();
 
@@ -45,13 +47,11 @@ class DataTable
 
         $records = $this->format($records);
 
-        return [
-            'draw' => $this->draw,
-            'recordsTotal' => $this->instance->count(),
-            'recordsFiltered' => count( $records ),
-            'data' => $records,
-            'chart_data' => null
-        ];
+        /** @var IDataTableResults $results */
+        $results = app()->make(IDataTableResults::class);
+
+        return $results->setDraw($this->draw)->setTotalRecords($this->instance->count())->setRecordsFiltered(count($records))
+            ->setData($records);
     }
 
     /**

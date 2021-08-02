@@ -4,7 +4,7 @@ namespace Miqu\Core\Models\Traits;
 
 use Exception;
 use Miqu\Core\Models\Security\Role;
-use Models\Security\UserRole;
+use Miqu\Core\Models\Security\UserRole;
 
 trait HasRole
 {

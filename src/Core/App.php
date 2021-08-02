@@ -4,7 +4,6 @@ namespace Miqu\Core;
 
 use Miqu\Core\Http\HeadersBag;
 use Miqu\Core\Http\HttpRequest;
-use Miqu\Core\Http\Strategies\InjectorStrategy;
 use Laminas\Diactoros\Uri;
 use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
 use League\Route\Http\Exception\BadRequestException;
@@ -13,7 +12,10 @@ use League\Route\Http\Exception\NotFoundException;
 use League\Route\Http\Exception\UnauthorizedException;
 use League\Route\Router;
 use League\Uri\Http;
+use Miqu\Core\Http\Strategies\LightWeightStrategy;
+use Miqu\Core\Http\Strategies\StrategyBase;
 use ReflectionException;
+use RuntimeException;
 use function Laminas\Diactoros\normalizeUploadedFiles;
 
 class App
@@ -48,7 +50,8 @@ class App
         $this->request = $this->getServerRequest();
         $this->uri = Http::createFromServer($_SERVER);
 
-        $this->router = (new Router)->setStrategy(new InjectorStrategy);
+        $this->router = (new Router);
+        $this->setApplicationStrategy();
 
         if ( strtolower( $this->request->getMethod() ) === 'post' )
             session( 'old', serialize( $this->request->getParsedBody() ) );
@@ -122,6 +125,22 @@ class App
     public function uri(): Http
     {
         return $this->uri;
+    }
+
+    public function setApplicationStrategy()
+    {
+        $strategy = \Miqu\Helpers\env('strategy');
+        if ( $strategy === null )
+            $strategy = LightWeightStrategy::class;
+
+        $instance = $this->make($strategy);
+
+        if ( ! ( $instance instanceof StrategyBase ) )
+            throw new RuntimeException(
+                sprintf( 'Strategy %s must implement %s class', $instance, StrategyBase::class )
+            );
+
+        $this->router->setStrategy($instance);
     }
 
     private function getServerRequest() : HttpRequest

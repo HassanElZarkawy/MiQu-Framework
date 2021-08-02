@@ -29,6 +29,9 @@ trait InvokesServiceProviders
 
     public function bootServiceProviders()
     {
+        if ( $this->providers === null )
+            return;
+
         $this->providers->each(function($provider) {
             /** @var $provider ServiceProvider */
             $provider->boot();
