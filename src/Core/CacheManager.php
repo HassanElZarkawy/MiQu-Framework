@@ -5,14 +5,24 @@
 namespace Miqu\Core;
 
 use Exception;
-use Phpfastcache\Exceptions\PhpfastcacheDriverCheckException;
-use Phpfastcache\Exceptions\PhpfastcacheDriverException;
-use Phpfastcache\Exceptions\PhpfastcacheDriverNotFoundException;
+use Phpfastcache\Core\Pool\ExtendedCacheItemPoolInterface;
 use Phpfastcache\Exceptions\PhpfastcacheInvalidArgumentException;
-use Phpfastcache\Exceptions\PhpfastcacheInvalidConfigurationException;
 
 class CacheManager
 {
+    private static $cacheInstance;
+
+    /**
+     * @return ExtendedCacheItemPoolInterface
+     */
+    private static function getInstance(): ExtendedCacheItemPoolInterface
+    {
+        if (self::$cacheInstance === null)
+            self::$cacheInstance = \Phpfastcache\CacheManager::getInstance( \Miqu\Helpers\env('cache.driver') );
+
+        return self::$cacheInstance;
+    }
+
     /**
      * @param string $key
      * @param int $expires
@@ -24,7 +34,7 @@ class CacheManager
         if ( ! \Miqu\Helpers\env( 'cache.enabled' ) )
             return call_user_func( $callback );
 
-        $instance = \Phpfastcache\CacheManager::getInstance( \Miqu\Helpers\env('cache.driver') );
+        $instance = self::getInstance();
         $cachedObject = $instance->getItem($key);
         if ( ! $cachedObject->isHit() )
         {
@@ -42,19 +52,14 @@ class CacheManager
     /**
      * @param string $key
      * @return mixed|null
-     * @throws PhpfastcacheDriverCheckException
-     * @throws PhpfastcacheDriverException
-     * @throws PhpfastcacheDriverNotFoundException
      * @throws PhpfastcacheInvalidArgumentException
-     * @throws PhpfastcacheInvalidConfigurationException
      */
     public static function get(string $key)
     {
         if ( ! \Miqu\Helpers\env( 'cache.enabled' ) )
             return null;
 
-        $instance = \Phpfastcache\CacheManager::getInstance('files');
-        $cachedObject = $instance->getItem($key);
+        $cachedObject = self::getInstance()->getItem($key);
         if ( $cachedObject->isHit() )
             return $cachedObject->get();
         return null;
@@ -63,35 +68,24 @@ class CacheManager
     /**
      * @param string $key
      * @return bool
-     * @throws PhpfastcacheDriverCheckException
-     * @throws PhpfastcacheDriverException
-     * @throws PhpfastcacheDriverNotFoundException
-     * @throws PhpfastcacheInvalidArgumentException
-     * @throws PhpfastcacheInvalidConfigurationException
+     * @throws Exception
      */
     public static function delete(string $key): bool
     {
         if ( ! \Miqu\Helpers\env( 'cache.enabled' ) )
             return false;
 
-        $instance = \Phpfastcache\CacheManager::getInstance('files');
-        return $instance->deleteItem($key);
+        return self::getInstance()->deleteItem($key);
     }
 
     /**
      * @return bool
-     * @throws PhpfastcacheDriverCheckException
-     * @throws PhpfastcacheDriverException
-     * @throws PhpfastcacheDriverNotFoundException
-     * @throws PhpfastcacheInvalidArgumentException
-     * @throws PhpfastcacheInvalidConfigurationException
      */
     public static function clear(): bool
     {
         if ( ! \Miqu\Helpers\env( 'cache.enabled' ) )
             return false;
 
-        $instance = \Phpfastcache\CacheManager::getInstance('files');
-        return $instance->clear();
+        return self::getInstance()->clear();
     }
 }
