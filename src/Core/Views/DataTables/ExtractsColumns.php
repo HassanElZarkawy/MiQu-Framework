@@ -20,9 +20,9 @@ trait ExtractsColumns
     public function extractColumns() : array
     {
         $cache_key = (string)string(get_class($this->instance))->replace('\\', '_');
-        return CacheManager::remember($cache_key, function() {
+        return CacheManager::remember($cache_key, 3600, function() {
             $table = $this->instance->getTable();
             return Manager::schema()->getColumnListing($table);
-        }, 3600);
+        });
     }
 }
