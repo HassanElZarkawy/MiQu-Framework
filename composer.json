@@ -20,7 +20,7 @@
     },
     "require": {
         "php": ">=7.2",
-        "fzaninotto/faker": "^1.9",
+        "fakerphp/faker": "^1.16.0",
         "danielstjules/stringy": "^3.1",
         "tightenco/collect": "^8.34",
         "nesbot/carbon": "^2.48",
