@@ -23,7 +23,7 @@ class HttpRequest extends ServerRequest
         if ( $this->has($name) )
             return $this->input($name);
 
-        throw new Exception("Property $name does not exist");
+        return null;
     }
 
     public function has(string $field) : bool

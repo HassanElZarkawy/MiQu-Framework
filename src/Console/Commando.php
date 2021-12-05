@@ -11,6 +11,7 @@ use Miqu\Console\Commands\Minify\CssMinifier;
 use Miqu\Console\Commands\Minify\JsMinifier;
 use Miqu\Console\Commands\ModelGenerator;
 use Miqu\Console\Commands\NotificationGenerator;
+use Miqu\Console\Commands\RequestGenerator;
 use Miqu\Console\Commands\Seeds\SeedGenerator;
 use Miqu\Console\Commands\Seeds\SeedRunner;
 use Miqu\Console\Commands\Tasks\TaskGenerator;
@@ -49,7 +50,8 @@ class Commando extends Application
             NotificationGenerator::class,
             MiddlewareGenerator::class,
             CssMinifier::class,
-            JsMinifier::class
+            JsMinifier::class,
+            RequestGenerator::class,
         ];
         foreach( $commands as $command )
         {

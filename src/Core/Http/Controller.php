@@ -13,16 +13,19 @@ class Controller
      */
     public function __call(string $method, array $parameters)
     {
-        $uri = request()->getUri()->getPath();
         $controller = static::class;
 
-        logger('http')->critical(
-            "$uri is mapped to unknown function in $controller",
-            [
-                'controller' => $controller,
-                'method' => $method
-            ]
-        );
+        if (\Miqu\Helpers\env('logging.enabled'))
+        {
+            $uri = request()->getUri()->getPath();
+            logger('http')->critical(
+                "$uri is mapped to unknown function in $controller",
+                [
+                    'controller' => $controller,
+                    'method' => $method
+                ]
+            );
+        }
 
         throw new BadRequestException(
             sprintf(
