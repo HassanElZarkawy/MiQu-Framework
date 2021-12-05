@@ -62,7 +62,7 @@ class Container implements IContainer, ContainerInterface
 
     /**
      * Gets an instance of an abstract from the bindings.
-     * If it doesn't exists, the function will try to make a new instance
+     * If it doesn't exist, the function will try to make a new instance
      * @param string $abstract eg (MyService::class)
      * @return mixed
      * @throws ReflectionException
@@ -137,9 +137,7 @@ class Container implements IContainer, ContainerInterface
      * @param string $id Identifier of the entry to look for.
      *
      * @return mixed Entry.
-     * @throws ContainerExceptionInterface Error while retrieving the entry.
      *
-     * @throws NotFoundExceptionInterface  No entry was found for **this** identifier.
      * @throws ReflectionException
      */
     public function get(string $id)

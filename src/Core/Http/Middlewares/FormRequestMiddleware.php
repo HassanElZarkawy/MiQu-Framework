@@ -33,7 +33,7 @@ class FormRequestMiddleware implements MiddlewareInterface
            {
                /** @var Route $route */
                $route = $routeMap[$httpMethod][$uri];
-               $callable = $route->getCallable();
+               $callable = $route->getCallable(app()->container);
                $formRequests = $this->getFormRequestInstance(
                    is_array($callable) ? $callable[0] : $callable,
                    is_array($callable) ? $callable[1] : null
