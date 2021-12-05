@@ -1,0 +1,15 @@
+<?php
+
+namespace Controllers;
+
+use Miqu\Core\Http\FormRequest;
+
+class {{class}} extends FormRequest
+{
+    public function rules(): array
+    {
+        return [
+
+        ];
+    }
+}

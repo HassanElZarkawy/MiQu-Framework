@@ -42,6 +42,9 @@ class App
      */
     private $uri;
 
+    /**
+     * @throws ReflectionException
+     */
     public function __construct()
     {
         global $container;
@@ -52,6 +55,7 @@ class App
 
         $this->router = (new Router);
         $this->setApplicationStrategy();
+        $this->setDefaultMiddlewares();
 
         if ( strtolower( $this->request->getMethod() ) === 'post' )
             session( 'old', serialize( $this->request->getParsedBody() ) );
@@ -127,9 +131,12 @@ class App
         return $this->uri;
     }
 
-    public function setApplicationStrategy()
+    /**
+     * @throws ReflectionException
+     */
+    public function setApplicationStrategy(): void
     {
-        $strategy = \Miqu\Helpers\env('strategy');
+        $strategy = \Miqu\Helpers\env('http.strategy');
         if ( $strategy === null )
             $strategy = LightWeightStrategy::class;
 
@@ -143,22 +150,37 @@ class App
         $this->router->setStrategy($instance);
     }
 
+    /**
+     * @throws ReflectionException
+     */
+    private function setDefaultMiddlewares(): void
+    {
+        if (\Miqu\Helpers\env('http.middlewares'))
+            foreach (\Miqu\Helpers\env('http.middlewares') as $middleware)
+                $this->router->middleware($this->container->Resolve($middleware));
+    }
+
+    /**
+     * @return HttpRequest
+     */
     private function getServerRequest() : HttpRequest
     {
         $request_body = $this->parseRequestBody();
-        $this->request = new HttpRequest(
+        return new HttpRequest(
             $_SERVER, normalizeUploadedFiles($_FILES),
             new Uri($_SERVER['REQUEST_URI']),
             $_SERVER['REQUEST_METHOD'], 'php://input', getallheaders(),
             $_COOKIE, $_GET, $request_body, $_SERVER['SERVER_PROTOCOL']
         );
-
-        return $this->request;
     }
 
+    /**
+     * @return array|null
+     */
     private function parseRequestBody() : ?array
     {
-        if ( ! ( strtolower( $_SERVER['REQUEST_METHOD'] ) === 'post' ) )
+        $method = strtolower( $_SERVER['REQUEST_METHOD'] );
+        if ( ! in_array( $method, [ 'post', 'put', 'patch', 'delete' ] ) )
             return null;
 
         return $_POST;
