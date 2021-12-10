@@ -108,7 +108,7 @@ class Route
     {
         return self::group($route, function (RouteGroup $group) use ($controller) {
             $group->get('/', [ $controller, 'index' ]);
-            $group->get('/{id}', [ $controller, 'show' ]);
+            $group->get('/show/{id}', [ $controller, 'show' ]);
             $group->get('/create', [ $controller, 'create' ]);
             $group->post('/create', [ $controller, 'store' ]);
             $group->get('/edit/{id}', [ $controller, 'edit' ]);
@@ -126,7 +126,7 @@ class Route
     {
         return self::group($route, function (RouteGroup $group) use ($controller) {
             $group->get('/', [ $controller, 'index' ]);
-            $group->get('/{id}', [ $controller, 'show' ]);
+            $group->get('/show/{id}', [ $controller, 'show' ]);
             $group->put('/create', [ $controller, 'store' ]);
             $group->patch('/edit/{id}', [ $controller, 'update' ]);
             $group->delete('/delete/{id}', [ $controller, 'destroy' ]);
