@@ -4,7 +4,6 @@ namespace Miqu\Core\Views\FormBuilder;
 
 use eftec\bladeone\BladeOne;
 use Exception;
-use Illuminate\Database\Eloquent\Model;
 use ReflectionException;
 
 class FormBuilder
@@ -18,6 +17,21 @@ class FormBuilder
      * @var string
      */
     private $url;
+
+    /**
+     * @var string
+     */
+    private $method = 'post';
+
+    /**
+     * @var string
+     */
+    private $saveText = 'Save';
+
+    /**
+     * @var string
+     */
+    private $cancelText = 'Cancel';
 
     /**
      * @throws ReflectionException
@@ -45,6 +59,24 @@ class FormBuilder
         return $this;
     }
 
+    public function setFormMethod(string $method): FormBuilder
+    {
+        $this->method = $method;
+        return $this;
+    }
+
+    public function setSaveText(string $text): FormBuilder
+    {
+        $this->saveText = $text;
+        return $this;
+    }
+
+    public function setCancelText(string $text): FormBuilder
+    {
+        $this->cancelText = $text;
+        return $this;
+    }
+
     public function add(Field $field): self
     {
         $this->fields[] = $field;
@@ -58,7 +90,9 @@ class FormBuilder
     public function render(): string
     {
         $engine = new BladeOne(
-            __DIR__ . DIRECTORY_SEPARATOR . 'fields'
+            __DIR__ . DIRECTORY_SEPARATOR . 'fields',
+            BASE_DIRECTORY . \Miqu\Helpers\env('blade.bin_path'),
+            \Miqu\Helpers\env('blade.mode')
         );
         $inputs = collect($this->fields)->map(function(Field $field) use ($engine) {
             return $field->render($engine);
@@ -66,6 +100,9 @@ class FormBuilder
         return $engine->run('form', [
             'inputs' => $inputs,
             'url' => $this->url,
+            'save' => $this->saveText,
+            'cancel' => $this->cancelText,
+            'method' => $this->method,
         ]);
     }
 

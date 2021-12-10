@@ -56,19 +56,6 @@ class User extends Model
                 'suspended' => 'Suspended'
             ],
         ],
-        'token' => [
-            'type' => 'relation',
-            'relation' => 'single',
-            'model' => Token::class,
-            'key' => 'id',
-            'value' => 'token',
-            'display' => Relation::DISPLAY_MULTI_OPTIONS,
-        ],
-        'image' => [
-            'type' => 'file',
-            'label' => 'Image',
-            'width' => 12,
-        ],
         'roles' => [
             'type' => 'relation',
             'relation' => 'single',
@@ -76,7 +63,12 @@ class User extends Model
             'key' => 'id',
             'value' => 'name',
             'display' => Relation::DISPLAY_MULTI_OPTIONS,
-        ]
+        ],
+        'image' => [
+            'type' => 'file',
+            'label' => 'Image',
+            'width' => 12,
+        ],
     ];
 
     /**
