@@ -100,6 +100,40 @@ class Route
     }
 
     /**
+     * @param string $route
+     * @param string $controller
+     * @return RouteGroup
+     */
+    public static function resource(string $route, string $controller): RouteGroup
+    {
+        return self::group($route, function (RouteGroup $group) use ($controller) {
+            $group->get('/', [ $controller, 'index' ]);
+            $group->get('/{id}', [ $controller, 'show' ]);
+            $group->get('/create', [ $controller, 'create' ]);
+            $group->post('/create', [ $controller, 'store' ]);
+            $group->get('/edit/{id}', [ $controller, 'edit' ]);
+            $group->post('/edit/{id}', [ $controller, 'update' ]);
+            $group->post('/delete/{id}', [ $controller, 'destroy' ]);
+        });
+    }
+
+    /**
+     * @param string $route
+     * @param string $controller
+     * @return RouteGroup
+     */
+    public static function apiResource(string $route, string $controller): RouteGroup
+    {
+        return self::group($route, function (RouteGroup $group) use ($controller) {
+            $group->get('/', [ $controller, 'index' ]);
+            $group->get('/{id}', [ $controller, 'show' ]);
+            $group->put('/create', [ $controller, 'store' ]);
+            $group->patch('/edit/{id}', [ $controller, 'update' ]);
+            $group->delete('/delete/{id}', [ $controller, 'destroy' ]);
+        });
+    }
+
+    /**
      * @param StrategyInterface $strategy
      * @return StrategyAwareInterface
      */
