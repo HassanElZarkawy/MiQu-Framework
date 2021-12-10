@@ -6,6 +6,7 @@ use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Miqu\Core\Models\User;
+use Miqu\Core\Views\FormBuilder\Types\Relation;
 
 class Role extends Model
 {
@@ -14,6 +15,30 @@ class Role extends Model
     protected $primaryKey = 'id';
 
     protected $guarded = [];
+
+    public $formBuilder = [
+        'name' => [
+            'type' => 'text',
+            'required' => true,
+            'width' => 8
+        ],
+        'slug' => [
+            'type' => 'text',
+            'required' => true,
+            'width' => 4,
+        ],
+        'description' => [
+            'type' => 'textArea',
+            'rows' => 7
+        ],
+        'permissions' => [
+            'type' => 'relation',
+            'model' => Permission::class,
+            'key' => 'id',
+            'value' => 'name',
+            'display' => Relation::DISPLAY_MULTI_OPTIONS,
+        ],
+    ];
 
     /**
      * @return HasManyThrough
