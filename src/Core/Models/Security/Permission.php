@@ -11,4 +11,21 @@ class Permission extends Model
     protected $primaryKey = 'id';
 
     protected $guarded = [];
+
+    protected $formBuilder = [
+        'name' => [
+            'type' => 'text',
+            'required' => true,
+            'width' => 8,
+        ],
+        'slug' => [
+            'type' => 'text',
+            'required' => true,
+            'width' => 4,
+        ],
+        'description' => [
+            'type' => 'textArea',
+            'rows' => 7,
+        ],
+    ];
 }
