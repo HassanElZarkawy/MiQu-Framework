@@ -1,0 +1,25 @@
+<?php
+
+namespace Components;
+
+use Clickfwd\Yoyo\Exceptions\MissingComponentTemplate;
+use Clickfwd\Yoyo\Interfaces\ViewProviderInterface;
+use Miqu\Core\Views\Component;
+
+class {{class}} extends Component
+{
+    protected $props = [];
+
+    public function mount()
+    {
+        // Component constructor
+    }
+
+    /**
+     * @throws MissingComponentTemplate
+     */
+    public function render(): ViewProviderInterface
+    {
+        return $this->view('{{view}}');
+    }
+}

@@ -19,9 +19,9 @@ class YoyoServiceProvider extends ServiceProvider
         $this->registerRoutes();
         $yoyo = new Yoyo();
         $yoyo->configure([
-            'url' => '/alive',
-            'scriptsPath' => 'http://miqu.local/Views/components/',
-            'namespace' => 'Miqu\Components\\',
+            'url' => \Miqu\Helpers\env('alive.url') ?? '/alive',
+            'scriptsPath' => \Miqu\Helpers\env('alive.scripts_path') ?? url('vendor/globalsoft/miqu/src/Core/Providers/Yoyo'),
+            'namespace' => \Miqu\Helpers\env('alive.namespace') ?? 'Components\\',
         ]);
         $yoyo->registerViewProvider(function() {
             return new YoyoBladeProvider( new View( BASE_DIRECTORY . 'Views/components' ) );
@@ -35,7 +35,6 @@ class YoyoServiceProvider extends ServiceProvider
             return (string)string(basename($file))->replace('.php', '')->dasherize();
         });
 
-        // $yoyo->registerComponents($classes->combine($views)->all());
         $classes->combine($views)->each(function($view, $class) {
             Yoyo::registerComponent($view, $class);
         });
@@ -43,11 +42,21 @@ class YoyoServiceProvider extends ServiceProvider
 
     private function registerRoutes()
     {
-        Route::post('/alive', function () {
+        $types = \Miqu\Helpers\env('alive.request_types') ?? [ 'GET', 'POST' ];
+        $standard = ['get', 'post', 'delete', 'put', 'patch'];
+        $url = \Miqu\Helpers\env('alive.url') ?? '/alive';
+        $handleRequest = function() {
             $output = (new Yoyo())->update();
             $response = response()->withStatus(200);
             $response->getBody()->write($output);
             return $response;
-        });
+        };
+        foreach ($types as $type)
+        {
+            $method = strtolower($type);
+            if (!in_array($method, $standard))
+                return;
+            Route::{$method}($url, $handleRequest);
+        }
     }
 }

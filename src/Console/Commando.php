@@ -3,6 +3,7 @@
 namespace Miqu\Console;
 
 use Ahc\Cli\Application;
+use Miqu\Console\Commands\ComponentGenerator;
 use Miqu\Console\Commands\ControllerGenerator;
 use Miqu\Console\Commands\MiddlewareGenerator;
 use Miqu\Console\Commands\Migrations\MigrationGenerator;
@@ -52,6 +53,7 @@ class Commando extends Application
             CssMinifier::class,
             JsMinifier::class,
             RequestGenerator::class,
+            ComponentGenerator::class,
         ];
         foreach( $commands as $command )
         {

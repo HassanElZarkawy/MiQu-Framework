@@ -3,8 +3,10 @@ composer.lock
 /.idea/
 .idea
 /Views/
-/Components/
+/src/Components/
 config.php
 index.php
 /bin/
 .htaccess
+/Views/
+commando
