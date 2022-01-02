@@ -2,12 +2,14 @@
 
 namespace Miqu\Core\Views;
 
+use Clickfwd\Yoyo\Yoyo;
 use Miqu\Core\Interfaces\IView;
 use Miqu\Core\Interfaces\IViewEngine;
 use Carbon\Carbon;
 use DateTime;
 use Exception;
 use ReflectionException;
+use function Yoyo\yoyo_scripts;
 
 class View implements IView
 {
@@ -104,5 +106,26 @@ class View implements IView
             } catch (ReflectionException $e) {
             }
         } );
+        $this->blade->directive('yoyo', [ $this, 'yoyo' ]);
+        $this->blade->directiveRT('yoyoScripts', [$this, 'yoyo_scripts']);
+    }
+
+    public function yoyo($expression): string
+    {
+        return <<<yoyo
+<?php
+\$yoyo = new \Clickfwd\Yoyo\Yoyo();
+if (Yoyo\is_spinning()) {
+    echo \$yoyo->mount({$expression})->refresh();
+} else {
+    echo \$yoyo->mount({$expression})->render();
+}
+?>
+yoyo;
+    }
+
+    public function yoyo_scripts()
+    {
+        echo yoyo_scripts();
     }
 }

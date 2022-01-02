@@ -42,6 +42,11 @@ class Relation extends Field
     private $mode = 'options';
 
     /**
+     * @var array
+     */
+    private $selectedValues = [];
+
+    /**
      * @throws ReflectionException
      * @throws Exception
      */
@@ -56,6 +61,9 @@ class Relation extends Field
 
         if (isset($configuration['display']))
             $this->mode = $configuration['display'];
+
+        if (isset($configuration['selected_values']))
+            $this->selectedValues = $configuration['selected_values'];
 
         if (isset($configuration['key']))
             $this->key = $configuration['key'];
@@ -82,6 +90,7 @@ class Relation extends Field
         }
         $config['options'] = $options;
         $config['assistText'] = '--Select One--';
+        $config['selected_values'] = $this->selectedValues;
         return $blade->run($this->mode, $config);
     }
 }
