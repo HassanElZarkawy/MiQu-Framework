@@ -2,7 +2,7 @@
     @if ($label)
         <label for="{{$id}}">{{ $label }}</label>
     @endif
-    <select id="{{$id}}" name="{{$id}}" class="form-control {{ $classes }}" {{ $required ? 'required' : null }}>
+    <select id="{{$id}}" name="{{$id}}" class="form-control {{ collect($classes)->join(' ') }}" {{ $required ? 'required' : null }}>
         @if (!$required)
             <option value="">{{$assistText}}</option>
         @endif

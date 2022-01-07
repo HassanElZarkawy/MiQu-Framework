@@ -2,13 +2,12 @@
     $input_id = substr(str_shuffle(str_repeat($x='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil(10/strlen($x)) )),1,10);
 @endphp
 <div class="from-group mb-3 col-md-{{$width}}">
-    @if($label)
-        <label for="{{$input_id}}">{{$label}}</label>
-    @endif
-    <div class="custom-file">
-        <input name="{{$id}}" id="{{$input_id}}" type="file" class="custom-file-input">
-        <label class="custom-file-label" for="{{$input_id}}">Click to upload</label>
-    </div>
+   <div class="mb-1">
+       @if($label)
+           <label for="{{ $input_id }}" class="form-label">{{ $label }}</label>
+       @endif
+       <input class="form-control" type="file" id="{{ $input_id }}" name="{{ $id }}">
+   </div>
 </div>
 
 <script>

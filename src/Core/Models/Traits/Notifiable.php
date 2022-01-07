@@ -1,10 +1,10 @@
-<?php /** @noinspection PhpUnused */
+<?php
 
 namespace Miqu\Core\Models\Traits;
 
 use Exception;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Query\Builder;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Miqu\Core\Models\Notification;
 use Miqu\Core\Notifications\INotification;
@@ -62,7 +62,7 @@ trait Notifiable
      */
     private function notificationsBaseQuery(): Builder
     {
-        return Notification::where('notifiable_type', get_class($this))
+        return Notification::query()->where('notifiable_type', get_class($this))
             ->where('notifiable_id', $this->{$this->primaryKey})->latest();
     }
 }

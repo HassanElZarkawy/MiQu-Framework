@@ -10,6 +10,7 @@ use Miqu\Core\Models\Traits\HasPermission;
 use Miqu\Core\Models\Traits\HasRole;
 use Miqu\Core\Models\Traits\InteractsWithMedia;
 use Miqu\Core\Models\Traits\Notifiable;
+use Miqu\Core\Views\FormBuilder\Field;
 use Miqu\Core\Views\FormBuilder\Types\Relation;
 
 class User extends Model
@@ -22,54 +23,26 @@ class User extends Model
 
     protected $guarded = [];
 
-    protected $hidden = [
-        'password', 'username', 'type'
-    ];
-
-    public $formBuilder = [
-        'name' => [
-            'type' => 'text',
-            'required' => true,
-            'width' => 12
-        ],
-        'username' => [
-            'type' => 'text',
-            'width' => 6
-        ],
-        'email' => [
-            'type' => 'email',
-            'width' => 6
-        ],
-        'password' => 'password',
-        'type' => [
-            'type' => 'options',
-            'options' => [
+    public function formDefinitions(): array
+    {
+        return [
+            Field::builder('name')->text()->required()->width(6),
+            Field::builder('username')->text()->required()->width(6),
+            Field::builder('email')->email()->required()->helpText('Sample help text'),
+            Field::builder('password')->password()->required(),
+            Field::builder('type')->select()->options([
                 'admin' => 'Admin',
                 'subscriber' => 'Subscriber',
-            ]
-        ],
-        'status' => [
-            'type' => 'options',
-            'required' => true,
-            'options' => [
+            ]),
+            Field::builder('status')->select()->options([
                 'active' => 'Active',
                 'suspended' => 'Suspended'
-            ],
-        ],
-        'roles' => [
-            'type' => 'relation',
-            'relation' => 'single',
-            'model' => Role::class,
-            'key' => 'id',
-            'value' => 'name',
-            'display' => Relation::DISPLAY_MULTI_OPTIONS,
-        ],
-        'image' => [
-            'type' => 'file',
-            'label' => 'Image',
-            'width' => 12,
-        ],
-    ];
+            ])->required(),
+            Field::builder('roles')->relation()->model(Role::class)
+                ->relationKey('id')->relationValue('name')->displayMode(Relation::DISPLAY_MULTI_OPTIONS),
+            Field::builder('image')->file()->label('Image')->width(12),
+        ];
+    }
 
     /**
      * @return HasOne

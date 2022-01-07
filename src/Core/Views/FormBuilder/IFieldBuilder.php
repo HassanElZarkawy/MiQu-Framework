@@ -46,4 +46,6 @@ interface IFieldBuilder
     public function relation(): Relation;
 
     public function file(): File;
+
+    public static function getType(): string;
 }

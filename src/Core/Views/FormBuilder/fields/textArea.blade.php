@@ -2,7 +2,7 @@
     @if ($label)
         <label for="{{$id}}">{{ $label }}</label>
     @endif
-    <textarea id="{{$id}}" name="{{$id}}" class="form-control {{ $classes }}" {{ $required ? 'required' : null }}
+    <textarea id="{{$id}}" name="{{$id}}" class="form-control {{ collect($classes)->join(' ') }}" {{ $required ? 'required' : null }}
         @if ($placeholder)
             placeholder="{{ $placeholder }}"
         @endif

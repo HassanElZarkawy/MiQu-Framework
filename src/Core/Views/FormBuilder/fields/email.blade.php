@@ -10,7 +10,7 @@
             id="{{$id}}"
             name="{{$id}}"
             type="email"
-            class="form-control {{ $classes }}"
+            class="form-control {{ collect($classes)->join(' ') }}"
             @if ($placeholder)
             placeholder="{{ $placeholder }}"
             @endif

@@ -7,7 +7,7 @@
             id="{{$id}}"
             name="{{$id}}"
             type="number"
-            class="form-control {{ $classes }}"
+            class="form-control {{ collect($classes)->join(' ') }}"
             @if ($placeholder)
                 placeholder="{{ $placeholder }}"
             @endif

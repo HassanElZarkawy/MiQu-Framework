@@ -3,6 +3,7 @@
 namespace Miqu\Core\Models\Security;
 
 use Illuminate\Database\Eloquent\Model;
+use Miqu\Core\Views\FormBuilder\Field;
 
 class Permission extends Model
 {
@@ -12,20 +13,12 @@ class Permission extends Model
 
     protected $guarded = [];
 
-    protected $formBuilder = [
-        'name' => [
-            'type' => 'text',
-            'required' => true,
-            'width' => 8,
-        ],
-        'slug' => [
-            'type' => 'text',
-            'required' => true,
-            'width' => 4,
-        ],
-        'description' => [
-            'type' => 'textArea',
-            'rows' => 7,
-        ],
-    ];
+    public function formDefinitions(): array
+    {
+        return [
+            Field::builder('name')->text()->required()->width(8),
+            Field::builder('slug')->text()->required()->width(4),
+            Field::builder('description')->textArea()->rows(7),
+        ];
+    }
 }
