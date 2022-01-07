@@ -4,7 +4,7 @@ namespace Miqu\Core\Views\FormBuilder;
 
 use eftec\bladeone\BladeOne;
 use Exception;
-use ReflectionException;
+use Illuminate\Database\Eloquent\Model;
 
 class FormBuilder
 {
@@ -34,20 +34,39 @@ class FormBuilder
     private $cancelText = 'Cancel';
 
     /**
-     * @throws ReflectionException
+     * @var string
      */
-    public static function fromModel(string $abstract): self
+    private $enctype = 'multipart/form-data';
+
+    /**
+     * @throws Exception
+     */
+    public static function fromModel($abstract): self
     {
-        $instance = app()->make($abstract);
+        if (is_string($abstract))
+            $instance = app()->make($abstract);
+        else if ($abstract instanceof Model)
+            $instance = $abstract;
+        else
+            throw new Exception('Only a fully qualified name of a model or the model itself are only allowed.');
+
         $builder = new self;
-        if (property_exists($instance, 'formBuilder'))
+        $is_editing = $abstract instanceof Model;
+        if (method_exists($instance, 'formDefinitions'))
         {
-            collect($instance->formBuilder)->each(function($type, $name) use($builder, $instance) {
-                $configuration = !is_array($type) ? Field::getDefaultConfiguration($type, $name) : $type;
-                $builder->add(
-                    self::getField($configuration['type'], $name)
-                        ->applyConfiguration($configuration)
-                );
+            collect($instance->formDefinitions())->each(function($field) use($builder, $instance, $is_editing) {
+                try {
+                    $configuration = $field->getConfiguration();
+                    if ($is_editing) {
+                        $configuration['value'] = static::getPropertyValue($configuration['name'], $instance);
+                    }
+                    $builder->add(
+                        self::getField($configuration['type'], $configuration['name'])
+                            ->setConfiguration($configuration)
+                    );
+                } catch (Exception $e) {
+                    // dd($e);
+                }
             });
         }
         return $builder;
@@ -77,7 +96,13 @@ class FormBuilder
         return $this;
     }
 
-    public function add(Field $field): self
+    public function enctype(string $enctype): FormBuilder
+    {
+        $this->enctype = $enctype;
+        return $this;
+    }
+
+    public function add(IField $field): self
     {
         $this->fields[] = $field;
         return $this;
@@ -94,7 +119,7 @@ class FormBuilder
             BASE_DIRECTORY . \Miqu\Helpers\env('blade.bin_path'),
             \Miqu\Helpers\env('blade.mode')
         );
-        $inputs = collect($this->fields)->map(function(Field $field) use ($engine) {
+        $inputs = collect($this->fields)->map(function($field) use ($engine) {
             return $field->render($engine);
         })->join('');
         return $engine->run('form', [
@@ -103,10 +128,11 @@ class FormBuilder
             'save' => $this->saveText,
             'cancel' => $this->cancelText,
             'method' => $this->method,
+            'enctype' => $this->enctype,
         ]);
     }
 
-    private static function getField($type, $name): Field
+    private static function getField($type, $name): IField
     {
         $fieldBuilder = Field::builder($name);
         switch($type) {
@@ -120,7 +146,7 @@ class FormBuilder
                 return $fieldBuilder->number();
             case 'password':
                 return $fieldBuilder->password();
-            case 'options':
+            case 'select':
                 return $fieldBuilder->select();
             case 'text':
                 return $fieldBuilder->text();
@@ -138,5 +164,12 @@ class FormBuilder
                 return $fieldBuilder->file();
         }
         return $fieldBuilder->text();
+    }
+
+    private static function getPropertyValue(string $name, Model $instance)
+    {
+        if ($instance->getAttribute($name) !== null)
+            return $instance->{$name};
+        return null;
     }
 }

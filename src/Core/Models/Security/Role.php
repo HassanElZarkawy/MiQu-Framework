@@ -6,6 +6,7 @@ use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Miqu\Core\Models\User;
+use Miqu\Core\Views\FormBuilder\Field;
 use Miqu\Core\Views\FormBuilder\Types\Relation;
 
 class Role extends Model
@@ -16,29 +17,16 @@ class Role extends Model
 
     protected $guarded = [];
 
-    public $formBuilder = [
-        'name' => [
-            'type' => 'text',
-            'required' => true,
-            'width' => 8
-        ],
-        'slug' => [
-            'type' => 'text',
-            'required' => true,
-            'width' => 4,
-        ],
-        'description' => [
-            'type' => 'textArea',
-            'rows' => 7
-        ],
-        'permissions' => [
-            'type' => 'relation',
-            'model' => Permission::class,
-            'key' => 'id',
-            'value' => 'name',
-            'display' => Relation::DISPLAY_MULTI_OPTIONS,
-        ],
-    ];
+    public function formDefinitions(): array
+    {
+        return [
+            Field::builder('name')->text()->required()->width(8),
+            Field::builder('slug')->text()->required()->width(4),
+            Field::builder('description')->textArea()->rows(7),
+            Field::builder('permissions')->relation()->model(Permission::class)
+                ->relationKey('id')->relationValue('name')->displayMode(Relation::DISPLAY_MULTI_OPTIONS),
+        ];
+    }
 
     /**
      * @return HasManyThrough
@@ -64,7 +52,7 @@ class Role extends Model
      */
     public function hasPermission(string $slug): bool
     {
-        $permission = Permission::where('slug', $slug)->getOne();
-        return RolePermission::where('role_id', $this->id)->where('permission_id', $permission->id)->getOne() !== null;
+        $permission = Permission::where('slug', $slug)->first();
+        return RolePermission::where('role_id', $this->id)->where('permission_id', $permission->id)->first() !== null;
     }
 }

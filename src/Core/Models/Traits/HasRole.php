@@ -3,6 +3,7 @@
 namespace Miqu\Core\Models\Traits;
 
 use Exception;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Miqu\Core\Models\Security\Role;
 use Miqu\Core\Models\Security\UserRole;
 
@@ -20,22 +21,21 @@ trait HasRole
     {
         if ( count( $this->roles ) === 0 )
         {
-            $userRoles = UserRole::where( 'user_id', $this->id )->pluck( 'role_id' )->all();
+            $userRoles = UserRole::query()->where( 'user_id', $this->id )->pluck( 'role_id' )->all();
             if ( count( $userRoles ) === 0 )
                 $userRoles = [ 0 ];
 
-            $this->roles = Role::in( 'id', $userRoles )->get()->all();
+            $this->roles = Role::query()->whereIn( 'id', $userRoles )->get()->all();
         }
     }
 
     /**
-     * @return array
+     * @return BelongsToMany
      * @throws Exception
      */
-    public function roles(): array
+    public function roles(): BelongsToMany
     {
-        $this->initRoles();
-        return $this->roles;
+        return $this->belongsToMany(Role::class, 'user_roles', 'user_id', 'role_id');
     }
 
     /**
